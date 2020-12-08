@@ -1,0 +1,56 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "overengineering_aoc",
+    "title": "AOC_2020_day4_part2_passport",
+    "description": "validation of password entry of the AOC 2020 day 4 programming task according to validation rules of part2",
+    "properties": {
+        "byr": {
+            "type": "string",
+            "pattern": "^(19[2-9][0-9]|200[0-2])$"
+        },
+        "iyr": {
+            "type": "string",
+            "pattern": "^(201[0-9]|2020)$"
+        },
+        "eyr": {
+            "type": "string",
+            "pattern": "^(202[0-9]|2030)$"
+        },
+        "hgt": {
+            "type": "string",
+            "pattern": "^((1[5-8][0-9]|19[0-3])cm|(59|6[0-9]|7[0-6])in)$"
+        },
+        "hcl": {
+            "type": "string",
+            "pattern": "^#[0-9a-f]{6}$"
+        },
+        "ecl": {
+            "type": "string",
+            "enum": [
+                "amb",
+                "blu",
+                "brn",
+                "gry",
+                "grn",
+                "hzl",
+                "oth"
+            ]
+        },
+        "pid": {
+            "type": "string",
+            "pattern": "^[0-9]{9}$"
+        },
+        "cid": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "byr",
+        "iyr",
+        "eyr",
+        "hgt",
+        "hcl",
+        "ecl",
+        "pid"
+    ]
+}

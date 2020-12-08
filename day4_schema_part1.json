@@ -1,0 +1,15 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "overengineering_aoc",
+    "title": "AOC_2020_day4_part1_passport",
+    "description": "validation of password entry of the AOC 2020 day 4 programming task according to validation rules of part1",
+    "required": [
+        "byr",
+        "iyr",
+        "eyr",
+        "hgt",
+        "hcl",
+        "ecl",
+        "pid"
+    ]
+}
