@@ -138,4 +138,5 @@ dmypy.json
 cython_debug/
 
 session.txt
+test_session.txt
 input/
