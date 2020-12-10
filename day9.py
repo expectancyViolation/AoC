@@ -7,7 +7,6 @@ DAY = 9
 @timing
 def part1(data, p_len=25):
     valid_combs = defaultdict(lambda: 0)
-    non_valids = []
     for i in range(len(data)):
         if i >= p_len and valid_combs[data[i]] <= 0:
             return data[i]
