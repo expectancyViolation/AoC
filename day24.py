@@ -1,7 +1,7 @@
 import re
 import numpy as np
 from collections import Counter, defaultdict
-from util import *
+from util import get_data, submit, timing
 
 DAY = 24
 
@@ -17,25 +17,27 @@ DIRECTIONS = {
 }
 
 
-def part1(data):
+def get_start_tiles(data):
     pattern = re.compile("|".join(DIRECTIONS))
     end_positions = [
         tuple(sum(DIRECTIONS[step] for step in pattern.findall(tile)))
         for tile in data
     ]
     tile_counts = Counter(end_positions)
-    black_tiles = [x for x, c in tile_counts.items() if c % 2 == 1]
-    return black_tiles
+    return [x for x, c in tile_counts.items() if c % 2 == 1]
+
+
+@timing
+def part1(data):
+    black_tiles = get_start_tiles(data)
+    return len(black_tiles)
 
 
 def step(locations):
     neighbors = defaultdict(lambda: 0)
-    # sample random location for the dimension:
-    for d_vec in DIRECTIONS.values():
-        if not any(d_vec):
-            continue
-        for vec in locations:
-            neighbors[tuple(x + dx for x, dx in zip(vec, d_vec))] += 1
+    for dx, dy in DIRECTIONS.values():
+        for x, y in locations:
+            neighbors[(x + dx, y + dy)] += 1
     new_locations = set()
     for loc in locations:
         if 1 <= neighbors[loc] <= 2:
@@ -46,7 +48,9 @@ def step(locations):
     return new_locations
 
 
-def part2(black_tiles):
+@timing
+def part2(data):
+    black_tiles = get_start_tiles(data)
     for i in range(100):
         black_tiles = step(black_tiles)
         #print(len(black_tiles))
@@ -57,10 +61,10 @@ if __name__ == "__main__":
     data = get_data(DAY)
     #print(data)
 
-    black_tiles = part1(data)
-    res = len(black_tiles)
+    res = part1(data)
+    print(res)
     #submit(DAY, 1, res)
 
-    res = part2(black_tiles)
+    res = part2(data)
     print(res)
-    submit(DAY, 2, res)
+    #submit(DAY, 2, res)

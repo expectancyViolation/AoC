@@ -1,7 +1,7 @@
 from collections import deque
 from functools import lru_cache
 
-from util import *
+from util import get_data, submit, timing
 
 DAY = 22
 
@@ -62,8 +62,6 @@ if __name__ == "__main__":
     split = data.index([])
     p1_deck = tuple(x[0] for x in data[1:split])
     p2_deck = tuple(x[0] for x in data[split + 2:])
-    print(p1_deck)
-    print(p2_deck)
 
     res = part1(p1_deck, p2_deck)
     print(res)

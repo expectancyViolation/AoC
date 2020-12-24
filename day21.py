@@ -1,6 +1,6 @@
 from collections import defaultdict, Counter
 
-from util import *
+from util import get_data, submit, timing
 
 DAY = 21
 

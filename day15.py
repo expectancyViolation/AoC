@@ -4,6 +4,7 @@ from itertools import count
 DAY = 15
 
 
+# slooooooow
 def gen_part1(data):
     last_spoken = {}
     last_num = None
