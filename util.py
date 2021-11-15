@@ -1,3 +1,7 @@
+import logging
+from hashlib import md5
+from math import inf
+from heapq import heappush, heappop
 from pathlib import Path
 import os
 
@@ -15,16 +19,16 @@ def timing(f):
         result = f(*args, **kw)
         te = time()
         print('func:%r took: %2.4f sec' % \
-          (f.__name__, te-ts))
+              (f.__name__, te - ts))
         return result
 
     return wrap
 
-
-SESSION_ID_FILE = "session.txt"
-#SESSION_ID_FILE = "test_session.txt"
-INPUT_URL = "https://adventofcode.com/2020/day/{day}/input"
-ANSWER_URL = "https://adventofcode.com/2020/day/{day}/answer"
+this_file_location=os.path.dirname(os.path.abspath(__file__))
+SESSION_ID_FILE = f"{this_file_location}/session.txt"
+# SESSION_ID_FILE = "test_session.txt"
+INPUT_URL = "https://adventofcode.com/{year}/day/{day}/input"
+ANSWER_URL = "https://adventofcode.com/{year}/day/{day}/answer"
 INPUT_DIRECTORY = "input"
 
 
@@ -38,20 +42,23 @@ def get_cookie():
     return {'session': session_id}
 
 
-def get_input(day):
-    r = requests.get(INPUT_URL.format(day=day), cookies=get_cookie())
+def get_input(day, year):
+    url = INPUT_URL.format(day=day, year=year)
+    logging.warning("fetching [url]=%s", url)
+    r = requests.get(url, cookies=get_cookie())
     return r.text
 
 
-def get_input_cached(day):
-    Path(INPUT_DIRECTORY).mkdir(parents=True, exist_ok=True)
-    filename = os.path.join(INPUT_DIRECTORY, f"{day}.txt")
+def get_input_cached(day, year):
+    year_path = os.path.join(INPUT_DIRECTORY, f"{year}")
+    Path(year_path).mkdir(parents=True, exist_ok=True)
+    filename = os.path.join(year_path, f"{day}.txt")
     try:
         with open(filename, "r") as f:
             return f.read()
     except FileNotFoundError as e:
         print("not found. fetching from source")
-        fetched_input = get_input(day)
+        fetched_input = get_input(day, year)
         with open(filename, "w") as f:
             f.write(fetched_input)
         return fetched_input
@@ -65,13 +72,7 @@ def parse_entry(entry):
             pass
 
 
-def get_data(day, raw=False, separator=None, filename=None):
-    if filename:
-        raw_data = open(filename, "r").read().strip()
-    else:
-        raw_data = get_input_cached(day).strip()
-    if raw:
-        return raw_data
+def parse_data(raw_data, separator=None):
     lines = raw_data.split("\n")
     if len(lines[0].split(separator)) > 1:
         return [[*map(parse_entry, l.split())] for l in lines]
@@ -79,9 +80,19 @@ def get_data(day, raw=False, separator=None, filename=None):
         return [*map(parse_entry, lines)]
 
 
-def submit(day, level, answer):
+def get_data(day, raw=False, separator=None, filename=None, year=2021):
+    if filename:
+        raw_data = open(filename, "r").read().strip()
+    else:
+        raw_data = get_input_cached(day, year=year).strip()
+    if raw:
+        return raw_data
+    return parse_data(raw_data, separator)
+
+
+def submit(day, level, answer, year=2021):
     data = {"level": level, "answer": answer}
-    r = requests.post(ANSWER_URL.format(day=day),
+    r = requests.post(ANSWER_URL.format(day=day, year=year),
                       data=data,
                       cookies=get_cookie())
 
@@ -90,3 +101,60 @@ def submit(day, level, answer):
     response = soup.find_all("main")[0].get_text()
     print(response)
     return response
+
+
+# general util:
+
+def md5_hash(word: str):
+    return md5(word.encode("ASCII")).hexdigest()
+
+
+# graph stuff:
+
+def dfs(gen_neighbors, initial_state, is_final_state, get_distances=False):
+    distances = {initial_state: 0}
+    frontier = {initial_state}
+    while frontier:
+        new_frontier = set()
+        for val in frontier:
+            for neighbor in gen_neighbors(val):
+                if neighbor in distances:
+                    continue
+                distances[neighbor] = distances[val] + 1
+                if is_final_state(neighbor):
+                    return distances[neighbor] if not get_distances else distances
+                new_frontier.add(neighbor)
+        frontier = new_frontier
+        # print(len(frontier))
+
+
+def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
+    frontier = []
+    heappush(frontier, (0, initial_state))
+    came_from = {}
+    cost_so_far = {}
+    came_from[initial_state] = None
+    cost_so_far[initial_state] = 0
+    min_heuristic = inf
+    while len(frontier):
+        # print("---")
+        if len(cost_so_far) % 10000 == 0:
+            print(len(cost_so_far), min_heuristic)
+        _, current = heappop(frontier)
+
+        if is_final_state(current):
+            print(len(cost_so_far))
+            return cost_so_far[current]
+
+        for next in gen_neighbors(current):
+            # elevator,floors=next
+            # assert isinstance(elevator,int)
+            # assert isinstance(tuple,floors)
+            new_cost = cost_so_far[current] + 1
+            if next not in cost_so_far or new_cost < cost_so_far[next]:
+                cost_so_far[next] = new_cost
+                heur = heuristic(next)
+                min_heuristic = min(min_heuristic, heur)
+                priority = new_cost + heur
+                heappush(frontier, (priority, next))
+                came_from[next] = current
