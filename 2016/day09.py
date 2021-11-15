@@ -3,6 +3,7 @@ import re
 from util import *
 
 DAY = 9
+YEAR = 2016
 
 
 def decompress(compressed, recurse=False):
@@ -36,7 +37,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY)
+    data = get_data(DAY,year=YEAR)
     # res = part1(data)
 
     # print(res)

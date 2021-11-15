@@ -3,6 +3,7 @@ from collections import Counter
 from util import *
 
 DAY = 6
+YEAR = 2016
 
 
 def part1(data):
@@ -16,7 +17,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY)
+    data = get_data(DAY,year=YEAR)
     print(data)
     # res = part1(data)
     res = part2(data)

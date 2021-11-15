@@ -4,7 +4,7 @@ from collections import Counter
 from util import *
 
 DAY = 4
-
+YEAR = 2016
 
 def split(row):
     room_regex = r"([a-z]+)([0-9]+)\[([a-z]+)\]"
@@ -36,7 +36,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    my_input = get_data(DAY)
+    my_input = get_data(DAY,year=YEAR)
     # print(my_input)
 
     # res = part1(my_input)

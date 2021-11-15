@@ -8,6 +8,7 @@ from heapq import heappush, heappop
 from util import *
 
 DAY = 11
+YEAR = 2016
 
 
 @dataclass(frozen=True, eq=True, order=True)

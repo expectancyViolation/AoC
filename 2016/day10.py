@@ -5,6 +5,7 @@ from math import prod
 from util import *
 
 DAY = 10
+YEAR = 2016
 
 
 def gen_simulate(data):

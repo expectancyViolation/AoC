@@ -1,6 +1,7 @@
 from util import *
 
 DAY = 12
+YEAR = 2016
 
 
 def execute(data, registers=None):
@@ -57,7 +58,7 @@ jnz a 2
 dec a"""
 
 if __name__ == "__main__":
-    data = get_data(DAY)
+    data = get_data(DAY,year=YEAR)
     # data = parse_data(test_data)
     print(data)
     # res = part1(data)

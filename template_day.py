@@ -12,7 +12,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY)
+    data = get_data(DAY,year=YEAR)
     print(data)
     res = part1(data)
     #res = part2(data)

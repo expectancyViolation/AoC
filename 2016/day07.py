@@ -3,6 +3,7 @@ import re
 from util import *
 
 DAY = 7
+YEAR = 2016
 
 
 def gen_hypernets(ip):
@@ -49,7 +50,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY)
+    data = get_data(DAY,year=YEAR)
     # print(data)
     # res = part1(data)
     # submit(DAY, 1, res)

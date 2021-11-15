@@ -5,6 +5,7 @@ import numpy as np
 from util import *
 
 DAY = 8
+YEAR = 2016
 
 
 def apply_row(screen, row):
