@@ -9,7 +9,7 @@ YEAR = 2016
 
 
 def get_hash(salt, streches=1):
-    @lru_cache(maxsize=10**5)
+    @lru_cache(maxsize=10 ** 5)
     def hash_signature(i):
         val = f"{salt}{i}"
         for _ in range(streches):
@@ -17,7 +17,7 @@ def get_hash(salt, streches=1):
         first_triplet = None
         fiver_runs = set()
         for val, it in groupby(val):
-            l = sum(1 for x in it)
+            l = sum(1 for _ in it)
             if l >= 3 and first_triplet is None:
                 first_triplet = val
             if l >= 5:
@@ -30,7 +30,7 @@ def get_hash(salt, streches=1):
 # going backwards from 5+ runs for previous 3+ run
 # issue: indices might be hit in different order
 # so: weird break condition needed, which continues for 1000 indices after having found 64
-# this gives no noticable performance increase since the complexity is dominated by the (stretched) hash
+# this gives no noticeable performance increase since the complexity is dominated by the (stretched) hash
 def solve(hasher):
     pads = []
     last_triplet_indices = defaultdict(lambda: [])
@@ -52,11 +52,13 @@ def solve(hasher):
     return sorted(pads)[63]
 
 
+@timing
 def part1(data):
     hasher = get_hash(data[0])
     return solve(hasher)
 
 
+@timing
 def part2(data):
     hasher = get_hash(data[0], streches=2017)
     return solve(hasher)
@@ -72,4 +74,4 @@ if __name__ == "__main__":
 
     print(res)
     # submit(DAY, 1, res, year=YEAR)
-    submit(DAY, 2, res, year=YEAR)
+    # submit(DAY, 2, res, year=YEAR)

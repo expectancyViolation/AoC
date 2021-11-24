@@ -50,7 +50,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY,year=YEAR)
+    data = get_data(DAY, year=YEAR)
     # print(data)
     # res = part1(data)
     # submit(DAY, 1, res)
