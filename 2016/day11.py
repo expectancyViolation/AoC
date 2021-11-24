@@ -87,7 +87,7 @@ def is_final_state(state):
 def part1(data):
     elevator, floors = get_initial_state(data)
     return dfs(gen_valid_neighbor_states, (elevator, floors),
-               is_final_state=is_final_state)
+               is_final_state=is_final_state).shortest_distance
 
 
 def part2(data):
@@ -101,7 +101,7 @@ def part2(data):
     # return a_star_search(gen_valid_neighbor_states, (elevator, floors),
     #                      is_final_state=is_final_state, heuristic=heuristic)
     return dfs(gen_valid_neighbor_states, (elevator, floors),
-               is_final_state=is_final_state)
+               is_final_state=is_final_state).shortest_distance
 
 
 test_data = """The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.

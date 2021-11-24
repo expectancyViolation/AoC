@@ -56,7 +56,7 @@ def part1(data):
     hasher = get_hash(data[0])
     return solve(hasher)
 
-
+@timing
 def part2(data):
     hasher = get_hash(data[0], streches=2017)
     return solve(hasher)

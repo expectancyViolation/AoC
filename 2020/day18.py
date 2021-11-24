@@ -4,7 +4,6 @@ DAY = 18
 
 #%%
 
-
 class WeirdInt:
     def __init__(self, val):
         self.val = val
