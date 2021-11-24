@@ -1,9 +1,11 @@
 import logging
+from dataclasses import dataclass
 from hashlib import md5
 from math import inf
 from heapq import heappush, heappop
 from pathlib import Path
 import os
+from typing import Dict, Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,7 +26,8 @@ def timing(f):
 
     return wrap
 
-this_file_location=os.path.dirname(os.path.abspath(__file__))
+
+this_file_location = os.path.dirname(os.path.abspath(__file__))
 SESSION_ID_FILE = f"{this_file_location}/session.txt"
 # SESSION_ID_FILE = "test_session.txt"
 INPUT_URL = "https://adventofcode.com/{year}/day/{day}/input"
@@ -52,7 +55,7 @@ def get_input(day, year):
 def get_input_cached(day, year):
     year_path = os.path.join(INPUT_DIRECTORY, f"{year}")
     Path(year_path).mkdir(parents=True, exist_ok=True)
-    filename = os.path.join(year_path, f"{day}.txt")
+    filename = os.path.join(year_path, f"{day:02}.txt")
     try:
         with open(filename, "r") as f:
             return f.read()
@@ -105,27 +108,64 @@ def submit(day, level, answer, year=2021):
 
 # general util:
 
+
 def md5_hash(word: str):
     return md5(word.encode("ASCII")).hexdigest()
 
 
+@dataclass(frozen=True)
+class SearchResult:
+    distances: Dict[any, int]
+    shortest_distance: int
+    shortest_node: any
+    predecessors: Dict[any, any]
+
+
 # graph stuff:
 
-def dfs(gen_neighbors, initial_state, is_final_state, get_distances=False):
+def connected_components(gen_neighbors, nodes):
+    nodes = set(nodes)
+    components = []
+    while nodes:
+        node = nodes.pop()
+        res = dfs(gen_neighbors=gen_neighbors, initial_state=node)
+        connected = set(res.distances)
+        components += [connected]
+        nodes -= connected
+    return components
+
+
+def dfs(gen_neighbors, initial_state,
+        is_final_state=None, short_circuit=True) -> Optional[SearchResult]:
     distances = {initial_state: 0}
+    predecessors = {}
+    predecessors[initial_state] = None
     frontier = {initial_state}
+    shortest_node = None
     while frontier:
+        # print(len(frontier))
         new_frontier = set()
         for val in frontier:
             for neighbor in gen_neighbors(val):
                 if neighbor in distances:
                     continue
                 distances[neighbor] = distances[val] + 1
-                if is_final_state(neighbor):
-                    return distances[neighbor] if not get_distances else distances
+                predecessors[neighbor] = val
+                if is_final_state is not None and is_final_state(neighbor):
+                    shortest_node = neighbor
+                    if short_circuit:
+                        return SearchResult(distances=distances,
+                                            shortest_distance=distances[neighbor],
+                                            predecessors=predecessors,
+                                            shortest_node=neighbor)
                 new_frontier.add(neighbor)
         frontier = new_frontier
         # print(len(frontier))
+
+    return SearchResult(distances=distances,
+                        shortest_distance=distances[shortest_node] if shortest_node is not None else inf,
+                        predecessors=predecessors,
+                        shortest_node=shortest_node)
 
 
 def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):

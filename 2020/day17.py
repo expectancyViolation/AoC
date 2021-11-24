@@ -42,11 +42,11 @@ if __name__ == "__main__":
     res_1 = simulate(locations_3d)
     print(res_1)
     # submit(DAY, 1, res_1)
-    locations_4d = {(*pos,0) for pos in locations_3d}
+    locations_4d = {(*pos, 0) for pos in locations_3d}
     res_2 = simulate(locations_4d)
     print(res_2)
 
-    locations_100d = {tuple([*pos]+[0]*97) for pos in locations_3d}
+    locations_100d = {tuple([*pos] + [0] * 97) for pos in locations_3d}
     res_2 = simulate(locations_100d)
     print(res_2)
-    #submit(DAY, 2, res_2)
+    # submit(DAY, 2, res_2)
