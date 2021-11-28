@@ -87,7 +87,7 @@ def get_data(day, raw=False, separator=None, filename=None, year=2021):
     if filename:
         raw_data = open(filename, "r").read().strip()
     else:
-        raw_data = get_input_cached(day, year=year).strip()
+        raw_data = get_input_cached(day, year=year).strip("\n")
     if raw:
         return raw_data
     return parse_data(raw_data, separator)
