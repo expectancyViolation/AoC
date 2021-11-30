@@ -27,20 +27,14 @@ async def run_program(data, snd, rcv, p_val=None):
         return arg
 
     while True:
-        # print(registers)
         instruction, *args = data[position]
-        # print(instruction, *args)
         position += 1
         if instruction == "snd":
             await snd(get_value(args[0]))
-            # last_sound = get_value(args[0])
         elif instruction == "rcv":
             res = await rcv(args[0])
             if res is not None:
                 registers[args[0]] = res
-            # val = registers[args[0]]
-            # if val != 0:
-            #     return last_sound
         elif instruction == "jgz":
             x, y = args
             if get_value(x) > 0:
@@ -76,7 +70,7 @@ async def part2(data):
 
     inputs = [trio.open_memory_channel(inf) for _ in range(2)]
 
-    # detect deadlock via 1 sec timeout
+    # detect deadlock via 1 sec timeout (this is kinda hack-y)
     with trio.move_on_after(1) as m:
         def get_send(i):
             async def send(val):
