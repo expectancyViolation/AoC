@@ -29,6 +29,8 @@ def timing(f):
 
 this_file_location = os.path.dirname(os.path.abspath(__file__))
 SESSION_ID_FILE = f"{this_file_location}/session.txt"
+
+# SESSION_ID_FILE = f"{this_file_location}/test_session.txt"
 # SESSION_ID_FILE = "test_session.txt"
 INPUT_URL = "https://adventofcode.com/{year}/day/{day}/input"
 ANSWER_URL = "https://adventofcode.com/{year}/day/{day}/answer"
@@ -87,7 +89,7 @@ def get_data(day, raw=False, separator=None, filename=None, year=2021):
     if filename:
         raw_data = open(filename, "r").read().strip()
     else:
-        raw_data = get_input_cached(day, year=year).strip()
+        raw_data = get_input_cached(day, year=year).strip("\n")
     if raw:
         return raw_data
     return parse_data(raw_data, separator)
