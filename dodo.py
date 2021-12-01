@@ -12,9 +12,9 @@ def task_template_day():
         template = templateEnv.get_template(TEMPLATE_FILE)
         out_path = f"./{year}"
         Path(out_path).mkdir(parents=True, exist_ok=True)
-        template.stream(year=year, day=day).dump(
-            os.path.join(out_path, f"day{int(day):02}.py")
-        )  # this is where to put args to the template renderer
+        out_file = os.path.join(out_path, f"day{int(day):02}.py")
+        if not os.path.exists(out_path):
+            template.stream(year=year, day=day).dump(out_file)
 
     year_param = {'name': 'year', 'short': 'y', 'default': '2021'}
     day_param = {'name': 'day', 'short': 'd', 'default': '1'}
