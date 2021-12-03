@@ -13,9 +13,9 @@ def task_template_day():
         out_path = f"./{year}"
         Path(out_path).mkdir(parents=True, exist_ok=True)
         out_file = os.path.join(out_path, f"day{int(day):02}.py")
-        if not os.path.exists(out_path):
+        if not os.path.exists(out_file):
             template.stream(year=year, day=day).dump(out_file)
 
     year_param = {'name': 'year', 'short': 'y', 'default': '2021'}
     day_param = {'name': 'day', 'short': 'd', 'default': '1'}
-    return {'actions': [template], 'params': [year_param, day_param]}
+    return {'actions': [template], 'params': [year_param, day_param],"verbosity":2}

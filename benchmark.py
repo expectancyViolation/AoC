@@ -7,11 +7,13 @@ from util import timing
 @timing
 def benchmark_file(file):
     print(f"benchmarking file:{file}")
-    subprocess.run(["python", file], stdout=subprocess.DEVNULL)
+    # danger this uses global interpreter
+    # subprocess.run(["python", file], stdout=subprocess.DEVNULL)
+    exec(open(file).read())
 
 
 def benchmark_all():
-    days = glob("day*.py")
+    days = glob("2021/day*.py")
     for day in sorted(days):
         benchmark_file(day)
 

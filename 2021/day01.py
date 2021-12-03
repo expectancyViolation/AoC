@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import pyplot as plt
 
 from util import *
 
@@ -18,8 +17,6 @@ def part2(data):
 if __name__ == "__main__":
     data = get_data(DAY, year=YEAR)
     print(data)
-    plt.plot(data)
-    plt.show()
     # res = part1(data)
     # print(res)
     # submit(DAY, 1, res, year=YEAR)
