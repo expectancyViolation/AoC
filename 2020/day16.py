@@ -3,6 +3,7 @@ import re
 import numpy as np
 from math import prod
 from scipy.optimize import linear_sum_assignment
+
 DAY = 16
 
 

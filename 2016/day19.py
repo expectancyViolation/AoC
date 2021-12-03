@@ -22,13 +22,15 @@ def solve(n):
 def part1(data):
     return solve(data)
 
+
 @timing
 def part2(n):
     number_to_left = {x: (x + 1) % n for x in range(n)}
     before_opposite = n // 2 - 1
     step = n % 2
     while before_opposite != number_to_left[before_opposite]:
-        number_to_left[before_opposite] = number_to_left[number_to_left[before_opposite]]
+        number_to_left[before_opposite] = number_to_left[
+            number_to_left[before_opposite]]
         if step:
             before_opposite = number_to_left[before_opposite]
         step = 1 - step

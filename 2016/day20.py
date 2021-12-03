@@ -17,7 +17,7 @@ def part1(data):
     return curr
 
 
-def part2(data, limit=2 ** 32):
+def part2(data, limit=2**32):
     data = sorted(data, key=lambda x: x[0])
     closing = 0
     res = 0

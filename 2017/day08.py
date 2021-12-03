@@ -18,12 +18,17 @@ if __name__ == "__main__":
     # data = test_data
     code = [
         line.split("if")
-        for line in data.replace(
-            "dec", "-=").replace("inc", "+=").split("\n")
+        for line in data.replace("dec", "-=").replace("inc", "+=").split("\n")
     ]
-    registers = [x for line in code for part in line for x in re.findall("([a-z]+)", part)]
+    registers = [
+        x for line in code for part in line
+        for x in re.findall("([a-z]+)", part)
+    ]
     init_code = [f"{register}=0" for register in registers]
-    code = [f"if {condition}:\n\t{instruction}\n" for (instruction, condition) in code]
+    code = [
+        f"if {condition}:\n\t{instruction}\n"
+        for (instruction, condition) in code
+    ]
     total_max = res = 0
     exec("\n".join(init_code))
     for step in code:

@@ -18,7 +18,8 @@ def decompress(compressed, recurse=False):
             string_end = string_start + x
             res += start
             if recurse:
-                res += y * decompress(compressed[string_start:string_end], recurse)
+                res += y * decompress(compressed[string_start:string_end],
+                                      recurse)
             else:
                 res += y * x
             curr_pos = string_end
@@ -37,7 +38,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY,year=YEAR)
+    data = get_data(DAY, year=YEAR)
     # res = part1(data)
 
     # print(res)

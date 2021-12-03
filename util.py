@@ -125,6 +125,7 @@ class SearchResult:
 
 # graph stuff:
 
+
 def connected_components(gen_neighbors, nodes):
     nodes = set(nodes)
     components = []
@@ -137,8 +138,10 @@ def connected_components(gen_neighbors, nodes):
     return components
 
 
-def dfs(gen_neighbors, initial_state,
-        is_final_state=None, short_circuit=True) -> Optional[SearchResult]:
+def dfs(gen_neighbors,
+        initial_state,
+        is_final_state=None,
+        short_circuit=True) -> Optional[SearchResult]:
     distances = {initial_state: 0}
     predecessors = {}
     predecessors[initial_state] = None
@@ -156,16 +159,18 @@ def dfs(gen_neighbors, initial_state,
                 if is_final_state is not None and is_final_state(neighbor):
                     shortest_node = neighbor
                     if short_circuit:
-                        return SearchResult(distances=distances,
-                                            shortest_distance=distances[neighbor],
-                                            predecessors=predecessors,
-                                            shortest_node=neighbor)
+                        return SearchResult(
+                            distances=distances,
+                            shortest_distance=distances[neighbor],
+                            predecessors=predecessors,
+                            shortest_node=neighbor)
                 new_frontier.add(neighbor)
         frontier = new_frontier
         # print(len(frontier))
 
     return SearchResult(distances=distances,
-                        shortest_distance=distances[shortest_node] if shortest_node is not None else inf,
+                        shortest_distance=distances[shortest_node]
+                        if shortest_node is not None else inf,
                         predecessors=predecessors,
                         shortest_node=shortest_node)
 

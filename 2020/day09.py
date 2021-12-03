@@ -1,6 +1,7 @@
 from util import *
 from collections import defaultdict
 import numpy as np
+
 DAY = 9
 
 

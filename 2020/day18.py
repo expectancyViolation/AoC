@@ -1,8 +1,10 @@
 from util import *
 import re
+
 DAY = 18
 
 #%%
+
 
 class WeirdInt:
     def __init__(self, val):
@@ -28,9 +30,11 @@ def eval_weird(line, mulsub="-"):
     very_weird = weird_subbed.replace("*", mulsub)
     return eval(very_weird).val
 
+
 @timing
 def part1(data):
     return sum(map(eval_weird, data))
+
 
 @timing
 def part2(data):

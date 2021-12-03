@@ -37,8 +37,7 @@ if __name__ == "__main__":
     data = get_data(DAY)
     locations_3d = {(i, j, 0)
                     for i, line in enumerate(data)
-                    for j, val in enumerate(line)
-                    if val == "#"}
+                    for j, val in enumerate(line) if val == "#"}
     res_1 = simulate(locations_3d)
     print(res_1)
     # submit(DAY, 1, res_1)

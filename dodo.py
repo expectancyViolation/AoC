@@ -18,4 +18,8 @@ def task_template_day():
 
     year_param = {'name': 'year', 'short': 'y', 'default': '2021'}
     day_param = {'name': 'day', 'short': 'd', 'default': '1'}
-    return {'actions': [template], 'params': [year_param, day_param],"verbosity":2}
+    return {
+        'actions': [template],
+        'params': [year_param, day_param],
+        "verbosity": 2
+    }

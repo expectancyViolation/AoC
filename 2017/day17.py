@@ -5,7 +5,6 @@ DAY = 17
 YEAR = 2017
 
 
-
 # dequee has O(k) for k shift
 # O(1) shift should be possible
 # but still quick enough
@@ -36,4 +35,4 @@ if __name__ == "__main__":
     res = part2(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
-    submit(DAY, 2, res,year=YEAR)
+    submit(DAY, 2, res, year=YEAR)

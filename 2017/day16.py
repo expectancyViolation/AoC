@@ -60,7 +60,7 @@ def part2(data, initial_state: Optional[str] = None):
             break
         first_seen[state] = i
         state = part1(data, state)
-    steps = (10 ** 9) % loop_size
+    steps = (10**9) % loop_size
     return next(val for val, i in first_seen.items() if i == steps)
 
 

@@ -8,7 +8,8 @@ YEAR = 2016
 
 
 def apply_instruction(state, instruction):
-    if m := re.match(r"^swap position (\d+) with position (\d+)$", instruction):
+    if m := re.match(r"^swap position (\d+) with position (\d+)$",
+                     instruction):
         p1, p2 = map(int, m.groups())
         state[p1], state[p2] = state[p2], state[p1]
     elif m := re.match(r"^swap letter (\w+) with letter (\w+)$", instruction):
@@ -19,15 +20,18 @@ def apply_instruction(state, instruction):
         num = int(num) * (1 if dir == "left" else -1)
         assert dir in ("left", "right")
         state = state[num:] + state[:num]
-    elif m := re.match(r"^rotate based on position of letter (\w+)$", instruction):
+    elif m := re.match(r"^rotate based on position of letter (\w+)$",
+                       instruction):
         letter = m.group(1)
         n = (state.index(letter))
         n = (1 + n + (n >= 4)) % len(state)
         state = state[-n:] + state[:-n]
-    elif m := re.match(r"^reverse positions (\d+) through (\d+)$", instruction):
+    elif m := re.match(r"^reverse positions (\d+) through (\d+)$",
+                       instruction):
         p1, p2 = map(int, m.groups())
         state[p1:p2 + 1] = state[p1:p2 + 1][::-1]
-    elif m := re.match(r"^move position (\d+) to position (\d+)$", instruction):
+    elif m := re.match(r"^move position (\d+) to position (\d+)$",
+                       instruction):
         p1, p2 = map(int, m.groups())
         letter = state[p1]
         state = state[:p1] + state[p1 + 1:]
@@ -55,17 +59,16 @@ def part2(data):
 
 
 instruction_sequence = [
-    "swap position 4 with position 0",
-    "swap letter d with letter b",
-    "reverse positions 0 through 4",
-    "rotate left 1 step",
-    "move position 1 to position 4",
-    "move position 3 to position 0",
+    "swap position 4 with position 0", "swap letter d with letter b",
+    "reverse positions 0 through 4", "rotate left 1 step",
+    "move position 1 to position 4", "move position 3 to position 0",
     "rotate based on position of letter b",
     "rotate based on position of letter d"
 ]
 
-state_sequence = ["ebcda", "edcba", "abcde", "bcdea", "bdeac", "abdec", "ecabd", "decab"]
+state_sequence = [
+    "ebcda", "edcba", "abcde", "bcdea", "bdeac", "abdec", "ecabd", "decab"
+]
 
 state = [*"abcde"]
 for instruction, expected_state in zip(instruction_sequence, state_sequence):
@@ -81,4 +84,4 @@ if __name__ == "__main__":
     res = part2(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
-    submit(DAY, 2, res,year=YEAR)
+    submit(DAY, 2, res, year=YEAR)

@@ -54,7 +54,7 @@ def parse_tiles(data):
 def get_tiles_with_connections(data):
     tiles = parse_tiles(data)
 
-    # hash every possibe transformation of a tile 
+    # hash every possibe transformation of a tile
     #   => inefficiency of factor 8, but still "fast enough"
     trafo_tiles = {(tile_id, rot, flip): transform(tile, rot, flip)
                    for tile_id, tile in tiles.items() for rot in range(4)
@@ -78,8 +78,6 @@ def get_corners(tiles, connections):
         tile_id
         for tile_id in tiles if len(neighbors(tile_id, connections)) == 2
     }
-
-
 
 
 def grid_bfs(tiles, connections):
@@ -116,6 +114,7 @@ def stitch_tiles(tiles, tile_positions):
                    trimmed_tile_size * y:trimmed_tile_size *
                    (y + 1)] = tile[1:-1, 1:-1]
     return full_image
+
 
 def get_monster_matrix():
     with open("input/20_monster.txt", "r") as f:

@@ -6,9 +6,9 @@ from util import *
 DAY = 22
 YEAR = 2017
 
-
 # "clean" but slow
 # Enums and dict lookups :/
+
 
 class DIR(Enum):
     up = (-1, 0)
@@ -29,10 +29,15 @@ class States(Enum):
 
 def simulate(area_map, n_steps, state_map=None, turn_delta_map=None):
     if state_map is None:
-        state_map = {States.infected: States.clean, States.clean: States.infected}
+        state_map = {
+            States.infected: States.clean,
+            States.clean: States.infected
+        }
     if turn_delta_map is None:
+
         def turn_delta_map(state):
             return 1 if state == States.infected else -1
+
     x, y = 0, 0
     dir_index = 0
     infectious_bursts = 0
@@ -70,7 +75,10 @@ def part2(data):
         else:
             return 2
 
-    return simulate(data, 10000000, state_map=state_map, turn_delta_map=turn_delta_map)
+    return simulate(data,
+                    10000000,
+                    state_map=state_map,
+                    turn_delta_map=turn_delta_map)
 
 
 TEST_DATA = """..#
@@ -83,9 +91,11 @@ if __name__ == "__main__":
     data = data.split("\n")
     L, l = len(data), len(data[0])
     print(L, l)
-    data = defaultdict(lambda: States.clean,
-                       {(i - L // 2, j - l // 2): States.infected if y == "#" else States.clean for i, x in
-                        enumerate(data) for j, y in enumerate(x)})
+    data = defaultdict(
+        lambda: States.clean, {(i - L // 2, j - l // 2):
+                               States.infected if y == "#" else States.clean
+                               for i, x in enumerate(data)
+                               for j, y in enumerate(x)})
     print(data)
     # res = part1(data)
     res = part2(data)

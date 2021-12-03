@@ -3,7 +3,8 @@ from copy import deepcopy
 import numpy as np
 from collections import defaultdict
 from scipy.signal import convolve2d
-from itertools import product,count
+from itertools import product, count
+
 DAY = 11
 
 NB_STENCIL = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
@@ -11,7 +12,6 @@ NB_STENCIL = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
 AND = np.logical_and
 NOT = np.logical_not
 OR = np.logical_or
-
 
 
 @timing
@@ -33,6 +33,7 @@ def part1(seats):
     neighbor_count = lambda occupied: convolve2d(
         occupied, NB_STENCIL, mode="same")
     return simulate(seats, neighbor_count, 4)
+
 
 @timing
 def part2(seats):

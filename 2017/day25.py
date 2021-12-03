@@ -37,9 +37,10 @@ def simulate(data):
     tape = defaultdict(lambda: 0)
     curr_pos = 0
     curr_state, n_steps = map(to_val, re.search(header_regex, data).groups())
-    states = {state: [*map(to_val, vals)]
-              for
-              state, *vals in re.findall(state_regex, data)}
+    states = {
+        state: [*map(to_val, vals)]
+        for state, *vals in re.findall(state_regex, data)
+    }
     for _ in range(n_steps):
         vals = states[curr_state]
         ops_i = 3 if tape[curr_pos] == 1 else 0

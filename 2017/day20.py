@@ -17,8 +17,7 @@ def parse_line(line):
 def part1(data):
     particles = [*map(parse_line, data)]
     a_min, i_min = min(
-        (sorted(map(abs, p["a"])), i)
-        for i, p in enumerate(particles))
+        (sorted(map(abs, p["a"])), i) for i, p in enumerate(particles))
     return i_min
 
 
@@ -32,11 +31,11 @@ def solve_quadratic_integer(a, b, c):
         if c % b != 0:
             return None
         return {2 * (-c) // b}
-    d_sq = b ** 2 - 4 * a * c
+    d_sq = b**2 - 4 * a * c
     if d_sq < 0:
         return None
     d = isqrt(d_sq)
-    if d ** 2 != d_sq:
+    if d**2 != d_sq:
         return None
     t = -b + d
     if t % a != 0:
@@ -63,8 +62,9 @@ def calculate(particle, t):
     res = []
     for a, v, p in zip(*[particle[x] for x in "avp"]):
         a, b, c = get_quadratic_coefficients(a, v, p)
-        res += [a * t ** 2 + b * t + c]
+        res += [a * t**2 + b * t + c]
     return tuple(res)
+
 
 @timing
 def part2(data):
@@ -75,7 +75,10 @@ def part2(data):
     for _ in range(1000):
         V += A
         P += V
-        _, indices, cnts = np.unique(P, return_index=True, return_counts=True, axis=0)
+        _, indices, cnts = np.unique(P,
+                                     return_index=True,
+                                     return_counts=True,
+                                     axis=0)
         remaining_indices = indices[cnts == 1]
         A = A[remaining_indices]
         V = V[remaining_indices]

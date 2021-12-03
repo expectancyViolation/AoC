@@ -2,6 +2,7 @@ from util import *
 from collections import defaultdict
 import re
 from itertools import product
+
 DAY = 14
 
 

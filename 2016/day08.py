@@ -23,12 +23,12 @@ def apply_row(screen, row):
 
 
 def part1(data):
-    screen = np.zeros([6, 50],dtype=np.uint8)
+    screen = np.zeros([6, 50], dtype=np.uint8)
     for row in data:
         apply_row(screen, row)
         print(row)
         for row in screen:
-            print("".join(map(lambda x: "X" if x else " ",row)))
+            print("".join(map(lambda x: "X" if x else " ", row)))
     return np.sum(screen)
 
 

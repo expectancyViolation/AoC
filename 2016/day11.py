@@ -79,6 +79,7 @@ def heuristic(state) -> float:
         cost += max(1, to_carry - 1) if to_carry else 0
     return cost
 
+
 def is_final_state(state):
     elevator, floors = state
     return all(len(x) == 0 for x in floors[:-1])

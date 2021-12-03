@@ -58,7 +58,7 @@ jnz a 2
 dec a"""
 
 if __name__ == "__main__":
-    data = get_data(DAY,year=YEAR)
+    data = get_data(DAY, year=YEAR)
     # data = parse_data(test_data)
     print(data)
     # res = part1(data)

@@ -10,7 +10,9 @@ def inflate(data):
 
 def checksum(data):
     while len(data) % 2 == 0:
-        data = [1 if data[i] == data[i + 1] else 0 for i in range(0, len(data), 2)]
+        data = [
+            1 if data[i] == data[i + 1] else 0 for i in range(0, len(data), 2)
+        ]
     return "".join(map(str, data))
 
 

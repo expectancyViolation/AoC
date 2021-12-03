@@ -9,7 +9,7 @@ YEAR = 2016
 
 
 def get_hash(salt, streches=1):
-    @lru_cache(maxsize=10 ** 5)
+    @lru_cache(maxsize=10**5)
     def hash_signature(i):
         val = f"{salt}{i}"
         for _ in range(streches):

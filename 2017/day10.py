@@ -30,7 +30,9 @@ def part1(data):
 def knot_hash(data: str):
     start = [ord(x) for x in data] + [17, 31, 73, 47, 23]
     sparse_hash = round(islice(cycle(start), 64 * len(start)))[1]
-    dense_hash = [reduce(xor, sparse_hash[i:i + 16]) for i in range(0, 256, 16)]
+    dense_hash = [
+        reduce(xor, sparse_hash[i:i + 16]) for i in range(0, 256, 16)
+    ]
     return "".join(f"{x:02x}" for x in dense_hash)
 
 

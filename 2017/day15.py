@@ -25,7 +25,8 @@ def part1(data):
 
 
 def part2(data):
-    gen_a, gen_b = (gen_vals(start, step, judge) for step, start, judge in zip(STEPS, data, (4, 8)))
+    gen_a, gen_b = (gen_vals(start, step, judge)
+                    for step, start, judge in zip(STEPS, data, (4, 8)))
     return sum(a == b for a, b in islice(zip(gen_a, gen_b), 5_000_000))
 
 

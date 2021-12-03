@@ -7,12 +7,12 @@ import sympy as sp
 DAY = 23
 YEAR = 2017
 
+inst_lookup = ["set", "sub", "mul", "jnz"]
 
-inst_lookup=["set","sub","mul","jnz"]
 
 def run(data, debug_switch=True):
     for d in data:
-        d[0]=inst_lookup.index(d[0])
+        d[0] = inst_lookup.index(d[0])
     registers = defaultdict(lambda: 0)
     if not debug_switch:
         registers["a"] = 1

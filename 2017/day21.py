@@ -10,7 +10,9 @@ def transform(data, lookup):
     L = len(data)
     n = 2 + (L % 2)
     m = n + 1
-    mapped = np.array([[lookup(data[i:i + n, j:j + n]) for j in range(0, L, n)] for i in range(0, L, n)])
+    mapped = np.array(
+        [[lookup(data[i:i + n, j:j + n]) for j in range(0, L, n)]
+         for i in range(0, L, n)])
     mapped = np.stack(mapped, axis=1)
     mapped = np.stack(mapped, axis=2)
     return mapped.reshape(L // n * m, L // n * m)
@@ -38,7 +40,10 @@ def solve(rules, n):
             resquared = [x[::-1] for x in resquared]
         return unsquare(resquared)
 
-    rules = {trafo(x, i, flip): y for x, _, y in rules for i in range(4) for flip in (True, False)}
+    rules = {
+        trafo(x, i, flip): y
+        for x, _, y in rules for i in range(4) for flip in (True, False)
+    }
 
     def lookup(arr):
         return resquare(rules[unsquare(arr)])

@@ -7,12 +7,7 @@ from util import *
 DAY = 18
 YEAR = 2017
 
-OPS = {
-    "add": add,
-    "set": lambda x, y: y,
-    "mul": mul,
-    "mod": mod
-}
+OPS = {"add": add, "set": lambda x, y: y, "mul": mul, "mod": mod}
 
 
 async def run_program(data, snd, rcv, p_val=None):
@@ -53,6 +48,7 @@ async def part1(data):
         last_sound = val
 
     async with trio.open_nursery() as n:
+
         async def rcv(val):
             if val != 0:
                 n.cancel_scope.cancel()
@@ -72,6 +68,7 @@ async def part2(data):
 
     # detect deadlock via 1 sec timeout (this is kinda hack-y)
     with trio.move_on_after(1) as m:
+
         def get_send(i):
             async def send(val):
                 snd, _recv = inputs[i]

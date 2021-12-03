@@ -35,15 +35,21 @@ def is_end(state):
 
 def part1(data):
     gen_neighbors = get_gen_neighbors(data)
-    result = dfs(gen_neighbors=gen_neighbors, initial_state=(0, 0, ""), is_final_state=is_end)
+    result = dfs(gen_neighbors=gen_neighbors,
+                 initial_state=(0, 0, ""),
+                 is_final_state=is_end)
     _x, _y, path = result.shortest_node
     return path
 
 
 def part2(data):
     gen_neighbors = get_gen_neighbors(data)
-    result = dfs(gen_neighbors=gen_neighbors, initial_state=(0, 0, ""), is_final_state=is_end, short_circuit=False)
-    return max(distance for (x, y, _), distance in result.distances.items() if 3 == x == y)
+    result = dfs(gen_neighbors=gen_neighbors,
+                 initial_state=(0, 0, ""),
+                 is_final_state=is_end,
+                 short_circuit=False)
+    return max(distance for (x, y, _), distance in result.distances.items()
+               if 3 == x == y)
 
 
 if __name__ == "__main__":

@@ -18,7 +18,9 @@ def to_val(s):
 
 
 def parse_line(line):
-    m = re.match(r"^/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)\%", line)
+    m = re.match(
+        r"^/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)\%",
+        line)
     args = [*map(int, m.groups())]
     return Node(*args)
 
