@@ -24,7 +24,7 @@ def get_consumption(rate1: List[int], rate2: List[int]):
 def part1(power: List[List[int]]):
     cols = [Counter(x) for x in zip(*power)]
     gamma = [get_best(x) for x in cols]
-    epsilon = [1 - get_best(x) for x in cols]
+    epsilon = [1-x for x in gamma]
     return get_consumption(gamma, epsilon)
 
 
@@ -34,7 +34,7 @@ def filter_common_digits(power: List[List[int]], low: bool):
         best = get_best(Counter(x[index] for x in power))
         power = [x for x in power if (x[index] == best) ^ low]
         index += 1
-    return data[0]
+    return power[0]
 
 
 def part2(power: List[List[int]]):
@@ -46,7 +46,6 @@ def part2(power: List[List[int]]):
 if __name__ == "__main__":
     input_lines = get_data(DAY, year=YEAR, raw=True).split("\n")
     data = [[*map(int, x)] for x in input_lines]
-    print(data)
     res = part1(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
