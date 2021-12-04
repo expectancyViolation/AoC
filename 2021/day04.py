@@ -14,7 +14,9 @@ def unmarked_grid_sum(grid):
     return sum(sum(y for y in x if y != DRAWN) for x in grid)
 
 
-def gen_win_order(nums, grids):
+def gen_win_order(data):
+    nums = [*map(int, data[0].split(","))]
+    grids = {i: parse_grid(grid) for i, grid in enumerate(data[1:])}
     for num in nums:
         for grid_num, grid in [*grids.items()]:
             # fill
@@ -35,10 +37,7 @@ def gen_win_order(nums, grids):
 
 if __name__ == "__main__":
     data = get_data(DAY, year=YEAR, raw=True).split("\n\n")
-    nums = [*map(int, data[0].split(","))]
-    grids = {i: parse_grid(grid) for i, grid in enumerate(data[1:])}
-    win_order = gen_win_order(nums, grids)
-    part1, *_, part2 = gen_win_order(nums, grids)
+    part1, *_, part2 = gen_win_order(data)
     print("part1", part1)
     print("part2", part2)
     submit(DAY, 1, part1, year=YEAR)
