@@ -46,5 +46,5 @@ if __name__ == "__main__":
     part1, *_, part2 = gen_win_order(data)
     print("part1", part1)
     print("part2", part2)
-    submit(DAY, 1, part1, year=YEAR)
-    submit(DAY, 2, part2, year=YEAR)
+    # submit(DAY, 1, part1, year=YEAR)
+    # submit(DAY, 2, part2, year=YEAR)
