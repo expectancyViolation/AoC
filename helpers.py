@@ -310,7 +310,6 @@ def mat_prod(arr1, arr2):
 
 
 def mat_dot(mat, vec):
-    print(mat)
     return [sum(x * y for x, y in zip(mat[i], vec)) for i in range(len(mat))]
 
 
@@ -336,7 +335,6 @@ def np_mat_pow_mod(mat, p, m):
     res = np.identity(len(mat), dtype=np.uint64)
     curr = np.array(mat, dtype=np.uint64)
     while p:
-        print(p)
         if p % 2:
             res = np.dot(res, curr)
             res %= m
