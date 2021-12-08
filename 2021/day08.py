@@ -1,49 +1,42 @@
 from collections import Counter
-from itertools import permutations
+
+import networkx as nx
+from networkx.algorithms import isomorphism
 
 from util import *
 
+# import solution
+
 DAY = 8
 YEAR = 2021
-
-# TODO: really slow use non-string representations?
-
 
 numbers = [
     "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf",
     "abcdefg", "abcdfg"
 ]
 
-sorted_nums = sorted(numbers)
-
 numbers_lookup = {segments: num for num, segments in enumerate(numbers)}
 
 
-def map_parts(parts, mapping):
-    return ["".join(mapping[x] for x in part) for part in parts]
+def generate_graph(segment_lists):
+    return nx.Graph((i, segment) for i, segments in enumerate(segment_lists)
+                    for segment in segments)
 
 
-def check_mapping(parts, mapping):
-    mapped_parts = map_parts(parts, mapping)
-    sorted_mapped_parts = sorted(
-        ["".join(sorted(part)) for part in mapped_parts])
-    return sorted_mapped_parts == sorted_nums
-
-
-def solve_pattern(patterns, output):
-    for mapping_order in permutations("abcdefg"):
-        mapping = {x: y for x, y in zip("abcdefg", mapping_order)}
-        if not check_mapping(patterns, mapping):
-            continue
-        mapped_output = map_parts(output, mapping)
-        return [numbers_lookup["".join(sorted(x))] for x in mapped_output]
+def solve_pattern(patterns, outpus):
+    G_base = generate_graph(numbers)
+    G_pat = generate_graph(patterns)
+    GM = isomorphism.GraphMatcher(G_pat, G_base)
+    GM.is_isomorphic()
+    output_segments = [
+        "".join(sorted(GM.mapping[x] for x in part))
+        for part in outpus
+    ]
+    return [numbers_lookup[seg] for seg in output_segments]
 
 
 def solve(data):
-    res = []
-    for patters, output in data:
-        res += [solve_pattern(patters, output)]
-    return res
+    return [solve_pattern(patters, output) for patters, output in data]
 
 
 @timing
@@ -59,6 +52,7 @@ def from_base(arr, base):
     for x in arr:
         res = res * base + x
     return res
+
 
 @timing
 def part2(data):
