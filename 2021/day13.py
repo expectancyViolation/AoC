@@ -15,9 +15,9 @@ def solve(coords, folds):
         paper[y, x] = 1
     for fold_dir, fold_pos in folds:
         if fold_dir == "x":
-            paper = (paper[:, :fold_pos] + paper[:, :fold_pos:-1]) > 0
+            paper = (paper[:, :fold_pos] | paper[:, :fold_pos:-1])
         if fold_dir == "y":
-            paper = (paper[:fold_pos, :] + paper[:fold_pos:-1, :]) > 0
+            paper = (paper[:fold_pos, :] | paper[:fold_pos:-1, :])
     return paper
 
 
@@ -27,7 +27,7 @@ def part1(coords, folds):
 
 
 def part2(coords, folds):
-    paper = solve(coords, folds).astype(int)
+    paper = solve(coords, folds)
     for line in paper:
         print("".join("X" if x else " " for x in line))
 
