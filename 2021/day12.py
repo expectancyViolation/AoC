@@ -13,18 +13,14 @@ def solve(data):
     edges = [set() for _ in range(len(data) + 1)]
     node_lookup = {}
     num = 0
-    G = nx.Graph()
     for x, y in data:
         for v in x, y:
             if v not in node_lookup:
                 node_lookup[v] = num
                 num += 1
         for a, b in (x, y), (y, x):
-            G.add_edge(a, b)
             if b != "start":
                 edges[node_lookup[a]].add(node_lookup[b])
-    print(G)
-    print([*nx.articulation_points(G)])
     start = node_lookup["start"]
     end = node_lookup["end"]
     inverse_node_lookup = {y: x for x, y in node_lookup.items()}
