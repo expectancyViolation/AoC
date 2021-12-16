@@ -1,3 +1,5 @@
+import numpy as np
+
 from util import *
 
 DAY = 15
@@ -19,9 +21,23 @@ def part1(data):
         x, y = state
         return 0
 
-    res = a_star_search(get_neighbors, (0, 0), lambda x: x == (L - 1, l - 1),
-                        heur)
+    res, came_from = a_star_search(get_neighbors, (0, 0),
+                                   lambda x: x == (L - 1, l - 1),
+                                   heur)
+
+    visited = {(L - 1, l - 1)}
+    curr = (L - 1, l - 1)
+    while curr != (0, 0):
+        curr = came_from[curr]
+        visited.add(curr)
+    A=np.zeros([L,l],dtype=np.uint8)
+    for x,y in visited:
+        A[x,y]=1
+    for line in A:
+        print("".join("x" if x else " " for x in line))
+
     return res
+
 
 @timing
 def part2(data):

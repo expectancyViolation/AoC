@@ -190,13 +190,10 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
         _, current = heappop(frontier)
 
         if is_final_state(current):
-            print("visited",len(cost_so_far))
-            return cost_so_far[current]
+            print("visited", len(cost_so_far))
+            return cost_so_far[current],came_from
 
-        for next,cost in gen_neighbors(current):
-            # elevator,floors=next
-            # assert isinstance(elevator,int)
-            # assert isinstance(tuple,floors)
+        for next, cost in gen_neighbors(current):
             new_cost = cost_so_far[current] + cost
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 cost_so_far[next] = new_cost
