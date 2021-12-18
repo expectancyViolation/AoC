@@ -8,7 +8,6 @@ from heapq import heappush, heappop
 # from sympy import lambdify
 import numpy as np
 
-
 from util import *
 
 DAY = 17
@@ -77,19 +76,19 @@ def part2(x_low, x_high, y_low, y_high):
         if a <= b:
             bounds.append((a, 2, y))
             bounds.append((b, 3, y))
-    x_open_intervals = set()
-    y_open_intervals = set()
+    x_open_intervals = 0
+    y_open_intervals = 0
     for _val, _prio, v in sorted(bounds):
         if _prio == 4:
-            x_open_intervals.remove(v)
+            x_open_intervals -= 1
         elif _prio == 1:
-            res += len(y_open_intervals)
-            x_open_intervals.add(v)
+            res += y_open_intervals
+            x_open_intervals += 1
         elif _prio == 2:
-            res += len(x_open_intervals)
-            y_open_intervals.add(v)
+            res += x_open_intervals
+            y_open_intervals += 1
         elif _prio == 3:
-            y_open_intervals.remove(v)
+            y_open_intervals -= 1
 
     return res
 
@@ -105,7 +104,7 @@ if __name__ == "__main__":
     raw_data = get_data(DAY, year=YEAR, raw=True)
     # raw_data = "target area: x=20..30, y=-10..-5"
     # raw_data="target area: x=22000..22045, y=-99960..-99956"
-    # raw_data='target area: x=282184..482382, y=-502273..-374688'
+    raw_data='target area: x=282184..482382, y=-502273..-374688'
     # raw_data = 'target area: x=6300659222..7198515181, y=-5865357542..-374274528'
     data = re.match(r"target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)",
                     raw_data).groups()
