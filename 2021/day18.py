@@ -1,3 +1,4 @@
+import json
 from functools import reduce
 from itertools import combinations
 
@@ -98,7 +99,7 @@ def part2(data):
 
 if __name__ == "__main__":
     data_raw = get_data(DAY, year=YEAR, raw=True)
-    data = [to_list(eval(x)) for x in data_raw.split("\n")]
+    data = [to_list(json.loads(x)) for x in data_raw.split("\n")]
     res = part1(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
