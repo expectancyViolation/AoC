@@ -53,12 +53,8 @@ def split(l: dllist):
     return False
 
 
-def step(l):
-    return explode(l) or split(l)
-
-
 def reduce_number(l):
-    while step(l):
+    while explode(l) or split(l):
         pass
 
 
@@ -68,7 +64,7 @@ def add(l1, l2):
     return res
 
 
-# caluclating magnitude in list representation is a bit more involved
+# calculating magnitude in list representation is a bit more involved
 # keep track of left (3) and right (2) "tree-factors"
 def magnitude(l):
     stack = []
