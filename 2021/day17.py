@@ -68,17 +68,17 @@ def part2(x_low, x_high, y_low, y_high):
     for x in range(1, x_high + 1):
         a, b = get_x_time_range(x, x_low, x_high)
         if a <= b:
-            bounds.append((a, 1, x))
-            bounds.append((b, 4, x))
+            bounds.append((a, 1))
+            bounds.append((b, 4))
     # plt.show()
     for y in range(y_low - 2, -y_low + 2):
         a, b = get_y_time_range(y, y_low, y_high)
         if a <= b:
-            bounds.append((a, 2, y))
-            bounds.append((b, 3, y))
+            bounds.append((a, 2))
+            bounds.append((b, 3))
     x_open_intervals = 0
     y_open_intervals = 0
-    for _val, _prio, v in sorted(bounds):
+    for _val, _prio in sorted(bounds):
         if _prio == 4:
             x_open_intervals -= 1
         elif _prio == 1:
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     raw_data = get_data(DAY, year=YEAR, raw=True)
     # raw_data = "target area: x=20..30, y=-10..-5"
     # raw_data="target area: x=22000..22045, y=-99960..-99956"
-    raw_data='target area: x=282184..482382, y=-502273..-374688'
+    raw_data = 'target area: x=282184..482382, y=-502273..-374688'
     # raw_data = 'target area: x=6300659222..7198515181, y=-5865357542..-374274528'
     data = re.match(r"target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)",
                     raw_data).groups()
