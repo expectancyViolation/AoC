@@ -1,17 +1,11 @@
-import time
 from collections import defaultdict
 from functools import lru_cache
 from itertools import combinations, permutations, product
 
-import matplotlib
+import util
+
 from scipy.spatial import KDTree
-
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-
 import numpy as np
-
-from util import *
 
 DAY = 19
 YEAR = 2021
@@ -50,17 +44,14 @@ def transform(v, perm, signs):
 # this abuses the weird structure of the inputs
 #   having 3 beacons in each quadrant
 #   so we only need to get the 3 point clusters
-
-
 def find_correspondences(scanners):
     tris = defaultdict(lambda: {})
-    print(time())
     for i, scanner in enumerate(scanners):
         tree = KDTree(scanner)
         for k, s in enumerate(scanner):
             _, (i1, i2, i3) = (tree.query(s, 3))
-            sides = ((l2_dist_squared(scanner[i1], scanner[i2]),
-                      i3), (l2_dist_squared(scanner[i2], scanner[i3]), i1),
+            sides = ((l2_dist_squared(scanner[i1], scanner[i2]), i3),
+                     (l2_dist_squared(scanner[i2], scanner[i3]), i1),
                      (l2_dist_squared(scanner[i1], scanner[i3]), i2))
             distances, indices = zip(*sorted(sides))
             tris[distances][i] = indices
@@ -83,10 +74,10 @@ def find_correspondences(scanners):
 
 
 def find_overlap_matching(correspondences, real_scan, scan2):
-    for trafo in get_valid_transforms():
+    for trans in get_valid_transforms():
         offset = None
         for i1, i2 in correspondences.items():
-            transformed = transform(scan2[i2], *trafo)
+            transformed = transform(scan2[i2], *trans)
             candidate_offset = tuple(
                 [x - y for x, y in zip(real_scan[i1], transformed)])
             if offset is None:
@@ -94,13 +85,13 @@ def find_overlap_matching(correspondences, real_scan, scan2):
             elif offset != candidate_offset:
                 break
         else:
-            coords = [transform(x, *trafo) for x in scan2]
+            coords = [transform(x, *trans) for x in scan2]
             best_match_offset = np.array(offset, dtype=int)
             best_match_coords = [X + best_match_offset for X in coords]
             return best_match_coords, best_match_offset
 
 
-@timing
+@util.timing
 def solve(scanners):
     correspondences = find_correspondences(scanners)
     not_matched_indices = {i for i in range(1, len(scanners))}
@@ -114,7 +105,8 @@ def solve(scanners):
             for j in [*not_matched_indices]:
                 if (i, j) not in correspondences:
                     continue
-                overlap = find_overlap_matching(correspondences[i, j], coords,
+                overlap = find_overlap_matching(correspondences[i, j],
+                                                coords,
                                                 scanners[j])
                 if overlap:
                     best_match_coords, offset = overlap
@@ -131,7 +123,7 @@ def solve(scanners):
     for scanner_id, points in real_coords.items():
         for point in points:
             all_coords[tuple(point)] += [scanner_id]
-    return len(all_coords), m, offsets, all_coords
+    return len(all_coords), m
 
 
 def parse_scanner(scanner):
@@ -141,36 +133,13 @@ def parse_scanner(scanner):
     ]
 
 
-def plot_result(scanner_positions, all_coords):
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    X, Y, Z = zip(
-        *[x for i, x in enumerate(scanner_positions.values()) if i != 0])
-    ax.scatter(X, Y, Z, marker="o")
-    x, y, z = scanner_positions[0]
-    ax.scatter(x, y, z, marker="o", color="red")
-    X, Y, Z, W = zip(*[(*v, len(w)) for v, w in all_coords.items()])
-    s = ax.scatter(X, Y, Z, c=W, marker="x")
-    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    for v, w in all_coords.items():
-        for i in w:
-            x, y, z = zip(*[v, scanner_positions[i]])
-            ax.plot(x, y, z, color=colors[i % len(colors)])
-    plt.colorbar(s)
-    plt.show()
-
-
 if __name__ == "__main__":
-    raw_data = get_data(DAY, year=YEAR, raw=True)
+    raw_data = util.get_data(DAY, year=YEAR, raw=True)
     results = []
     times = []
     scanners = [*map(parse_scanner, raw_data.split("\n\n"))]
-    part1, part2, scanner_positions, coords = solve(scanners)
-    # C = Counter(all_coords.values())
-    # print(C)
+    part1, part2 = solve(scanners)
     print(part1, part2)
-
-    plot_result(scanner_positions, coords)
 
     # submit(DAY, 1, part1,year=YEAR)
     # submit(DAY, 2, part2,year=YEAR)
