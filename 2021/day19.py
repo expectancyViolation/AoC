@@ -1,11 +1,11 @@
 import time
-from collections import Counter, defaultdict
+from collections import defaultdict
 from functools import lru_cache
 from itertools import combinations, permutations, product
-from math import prod
-from random import shuffle
 
 import matplotlib
+from scipy.spatial import KDTree
+
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
@@ -19,6 +19,10 @@ YEAR = 2021
 
 def manhattan(v1, v2):
     return sum(abs(x - y) for x, y in zip(v1, v2))
+
+
+def l2_dist_squared(v1, v2):
+    return sum((x1 - x2)**2 for x1, x2 in zip(v1, v2))
 
 
 def perm_inversions(perm):
@@ -40,20 +44,24 @@ def transform(v, perm, signs):
     return [v[i] * s for i, s in zip(perm, signs)]
 
 
-def l2_sq(v1, v2):
-    return sum((x1 - x2) ** 2 for x1, x2 in zip(v1, v2))
-
-
 # this depends on the assumption that
 # any triangle of 3 points in the scans is unique
 # (i.e. its triple of side lengths)
+# this abuses the weird structure of the inputs
+#   having 3 beacons in each quadrant
+#   so we only need to get the 3 point clusters
+
+
 def find_correspondences(scanners):
     tris = defaultdict(lambda: {})
+    print(time())
     for i, scanner in enumerate(scanners):
-        d_2 = [[l2_sq(p, q) for j, q in enumerate(scanner)]
-               for i, p in enumerate(scanner)]
-        for i1, i2, i3 in combinations(range(len(scanner)), 3):
-            sides = ((d_2[i1][i2], i3), (d_2[i2][i3], i1), (d_2[i1][i3], i2))
+        tree = KDTree(scanner)
+        for k, s in enumerate(scanner):
+            _, (i1, i2, i3) = (tree.query(s, 3))
+            sides = ((l2_dist_squared(scanner[i1], scanner[i2]),
+                      i3), (l2_dist_squared(scanner[i2], scanner[i3]), i1),
+                     (l2_dist_squared(scanner[i1], scanner[i3]), i2))
             distances, indices = zip(*sorted(sides))
             tris[distances][i] = indices
     correspondences = defaultdict(lambda: [])
@@ -141,8 +149,7 @@ def plot_result(scanner_positions, all_coords):
     ax.scatter(X, Y, Z, marker="o")
     x, y, z = scanner_positions[0]
     ax.scatter(x, y, z, marker="o", color="red")
-    X, Y, Z, W = zip(
-        *[(*v, len(w)) for v, w in all_coords.items()])
+    X, Y, Z, W = zip(*[(*v, len(w)) for v, w in all_coords.items()])
     s = ax.scatter(X, Y, Z, c=W, marker="x")
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     for v, w in all_coords.items():
@@ -158,12 +165,12 @@ if __name__ == "__main__":
     results = []
     times = []
     scanners = [*map(parse_scanner, raw_data.split("\n\n"))]
-    part1, part2, scanner_positions, all_coords = solve(scanners)
+    part1, part2, scanner_positions, coords = solve(scanners)
     # C = Counter(all_coords.values())
     # print(C)
     print(part1, part2)
 
-    plot_result(scanner_positions, all_coords)
+    plot_result(scanner_positions, coords)
 
     # submit(DAY, 1, part1,year=YEAR)
     # submit(DAY, 2, part2,year=YEAR)
