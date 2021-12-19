@@ -50,41 +50,57 @@ def get_valid_transforms(d=3):
 def transform(v, perm, signs):
     return [v[i] * s for i, s in zip(perm, signs)]
 
+@timing
+def find_mappings(scanners):
+    tris = defaultdict(lambda: {})
+    for i, scanner in enumerate(scanners):
+        for (i1, p1), (i2, p2), (i3, p3) in combinations(enumerate(scanner), 3):
+            distances, indices = zip(*sorted(((l2_sq(p1, p2), i3),
+                                              (l2_sq(p2, p3), i1),
+                                              (l2_sq(p1, p3), i2))))
+            tris[distances][i] = indices
 
-def find_overlap(d1, d2, scanner1, scanner2, score_limit=12):
-    reference_distances = d1
-    reference_vectors = defaultdict(lambda: [])
-    for d, pairs in reference_distances.items():
-        for i, j in pairs:
-            reference_vectors[d].append(tuple(scanner1[j] - scanner1[i]))
-    for perm, signs in get_valid_transforms():
-        match = False
-        coords = [np.array(transform(v, perm, signs)) for v in scanner2]
-        offset_counts = defaultdict(lambda: 0)
-        for x in reference_distances:
-            if x not in d2:
-                continue
-            for i, j in d2[x]:
-                vec = coords[j] - coords[i]
-                vec = tuple(vec)
-                vec_inv = tuple(vec)
-                for v in reference_vectors[x]:
-                    if vec == v or vec_inv == v:
-                        match = True
-                        for a in i, j:
-                            for b in reference_distances[x][0]:
-                                offset_counts[tuple(coords[a] -
-                                                    scanner1[b])] += 1
-        if match:
-            cnt, offset = max((y, x) for x, y in offset_counts.items())
-            if cnt >= score_limit:
-                best_match_offset = np.array(offset, dtype=int)
-                best_match_coords = [X - best_match_offset for X in coords]
-                return best_match_coords, best_match_offset
+    correspondences = defaultdict(lambda: [])
+    for dist, lookups in tris.items():
+        if len(lookups) <= 1:
+            continue
+        for i, j in combinations(lookups, 2):
+            for i1, i2 in zip(lookups[i], lookups[j]):
+                correspondences[(i, j)].append((i1, i2))
+    mappings = defaultdict()
+    for (i, j), items in correspondences.items():
+        mapping = {x: y for x, y in items}
+        inverse_mapping = {y: x for x, y in items}
+        if len(mapping) >= 12:
+            mappings[(i, j)] = mapping
+            mappings[(j, i)] = inverse_mapping
+    return mappings
+
+
+def find_overlap_matching(mappings, real_scan, scan2, i, j):
+    if (i, j) not in mappings:
+        return None
+    mapping = mappings[(i, j)]
+    for trafo in get_valid_transforms():
+        offset = None
+        for i1, i2 in mapping.items():
+            transformed = transform(scan2[i2], *trafo)
+            candidate_offset = tuple(
+                [x - y for x, y in zip(real_scan[i1], transformed)])
+            if offset is None:
+                offset = candidate_offset
+            elif offset != candidate_offset:
+                break
+        else:
+            coords = [transform(x, *trafo) for x in scan2]
+            best_match_offset = np.array(offset, dtype=int)
+            best_match_coords = [X + best_match_offset for X in coords]
+            return best_match_coords, best_match_offset
 
 
 @timing
 def solve(scanners):
+    mappings = find_mappings(scanners)
     not_matched_indices = {i for i in range(1, len(scanners))}
     distances = {
         i: all_distances(scanner)
@@ -93,15 +109,15 @@ def solve(scanners):
     real_coords = {0: [x for x in scanners[0]]}
     frontier = {0}
     offsets = [[0, 0, 0]]
-    while not_matched_indices:
+    while frontier:
         print(frontier)
         print(not_matched_indices)
         nf = set()
         for i in frontier:
             coords = real_coords[i]
             for j in [*not_matched_indices]:
-                overlap = find_overlap(distances[i], distances[j], coords,
-                                       scanners[j])
+                overlap = find_overlap_matching(mappings, coords, scanners[j],
+                                                i, j)
                 if overlap:
                     best_match_coords, offset = overlap
                     not_matched_indices.remove(j)
@@ -121,29 +137,40 @@ def solve(scanners):
     return len(all_coords), m, scanner_positions, all_coords
 
 
-def parse_scatter(scanner):
+def parse_scanner(scanner):
     return [
         np.array([*map(int, line.split(","))], dtype=int)
         for line in scanner.split("\n")[1:]
     ]
 
 
-if __name__ == "__main__":
-    raw_data = get_data(DAY, year=YEAR, raw=True)
-    results = []
-    times = []
-    scanners = [*map(parse_scatter, raw_data.split("\n\n"))]
-    part1, part2, scanner_positions, all_coords = solve(scanners)
-    C = Counter(all_coords.values())
-    print(C)
-    print(part1, part2)
+def plot_result(scanner_positions, all_coords):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     X, Y, Z = zip(*scanner_positions)
     ax.scatter(X, Y, Z, marker="o")
-    X, Y, Z, W = zip(*[(*v, w) for v, w in all_coords.items() if w>1])
-    s=ax.scatter(X, Y, Z,c=W, marker="x")
+    X, Y, Z, W = zip(*[(*v, w) for v, w in all_coords.items() if w > 1])
+    s = ax.scatter(X, Y, Z, c=W, marker="x")
     plt.colorbar(s)
     plt.show()
+
+
+def l2_sq(v1, v2):
+    return sum((x1 - x2) ** 2 for x1, x2 in zip(v1, v2))
+
+
+if __name__ == "__main__":
+    raw_data = get_data(DAY, year=YEAR, raw=True)
+    results = []
+    times = []
+    scanners = [*map(parse_scanner, raw_data.split("\n\n"))]
+    part1, part2, scanner_positions, all_coords = solve(scanners)
+    # C = Counter(all_coords.values())
+    # print(C)
+    print(part1, part2)
+
+    # plot_result(scanner_positions,all_coords)
+    print(time())
+
     # submit(DAY, 1, part1,year=YEAR)
     # submit(DAY, 2, part2,year=YEAR)
