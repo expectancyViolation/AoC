@@ -5,7 +5,6 @@ from itertools import combinations, permutations, product
 import util
 
 from scipy.spatial import KDTree
-import numpy as np
 
 DAY = 19
 YEAR = 2021
@@ -16,7 +15,7 @@ def manhattan(v1, v2):
 
 
 def l2_dist_squared(v1, v2):
-    return sum((x1 - x2)**2 for x1, x2 in zip(v1, v2))
+    return sum((x1 - x2) ** 2 for x1, x2 in zip(v1, v2))
 
 
 def perm_inversions(perm):
@@ -36,6 +35,13 @@ def get_valid_transforms(d=3):
 
 def transform(v, perm, signs):
     return [v[i] * s for i, s in zip(perm, signs)]
+
+
+def add(v1, v2):
+    return [(x1 + x2) for x1, x2 in zip(v1, v2)]
+
+def sub(v1, v2):
+    return [(x1 - x2) for x1, x2 in zip(v1, v2)]
 
 
 # this depends on the assumption that
@@ -86,8 +92,8 @@ def find_overlap_matching(correspondences, real_scan, scan2):
                 break
         else:
             coords = [transform(x, *trans) for x in scan2]
-            best_match_offset = np.array(offset, dtype=int)
-            best_match_coords = [X + best_match_offset for X in coords]
+            best_match_offset = offset
+            best_match_coords = [add(X,best_match_offset) for X in coords]
             return best_match_coords, best_match_offset
 
 
@@ -128,7 +134,7 @@ def solve(scanners):
 
 def parse_scanner(scanner):
     return [
-        np.array([*map(int, line.split(","))], dtype=int)
+        [*map(int, line.split(","))]
         for line in scanner.split("\n")[1:]
     ]
 
