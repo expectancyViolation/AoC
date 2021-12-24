@@ -191,7 +191,7 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
 
         if is_final_state(current):
             print("visited", len(cost_so_far))
-            return cost_so_far[current],came_from
+            return cost_so_far[current],came_from,current
 
         for next, cost in gen_neighbors(current):
             new_cost = cost_so_far[current] + cost
