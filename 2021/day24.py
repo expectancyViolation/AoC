@@ -50,6 +50,8 @@ def solve(values):
                 new_backstates |= {*reverse_states}
         backstates = new_backstates
     for succs in successors:
+        for i in range(len(values)):
+            print(i,sum(1 for j,s in succs if j==i))
         solution = []
         curr = 0
         for i in range(len(values)):
