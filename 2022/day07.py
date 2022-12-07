@@ -38,23 +38,17 @@ def get_dirsizes(data):
 
 
 def part1(data):
-    res = 0
     dir_sizes = get_dirsizes(data)
-    for dir, size in dir_sizes.items():
-        if size <= 100000:
-            res += size
-    return res
+    return sum(size for size in dir_sizes.values() if size <= 100000)
 
 
 def part2(data):
-    dirsizes = get_dirsizes(data)
-    free_space_needed = 30000000 - (70000000 - dirsizes[tuple()])
-    return min(size for size in dirsizes.values() if size >= free_space_needed)
+    dir_sizes = get_dirsizes(data)
+    free_space_needed = 30000000 - (70000000 - dir_sizes[tuple()])
+    return min(size for size in dir_sizes.values() if size >= free_space_needed)
 
 
 if __name__ == "__main__":
-    # data = get_data(DAY, year=YEAR, filename="input/2022/07_test.txt")
-
     data = get_data(DAY, year=YEAR)
     print(data)
     res = part1(data)
