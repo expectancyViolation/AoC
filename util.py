@@ -7,11 +7,15 @@ from pathlib import Path
 import os
 from typing import Dict, Optional
 
+import numpy as np
 import requests
+from PIL import Image
 from bs4 import BeautifulSoup
 
 from functools import wraps
 from time import time
+
+from pytesseract import pytesseract
 
 
 def timing(f):
@@ -191,7 +195,7 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
 
         if is_final_state(current):
             print("visited", len(cost_so_far))
-            return cost_so_far[current],came_from,current
+            return cost_so_far[current], came_from, current
 
         for next, cost in gen_neighbors(current):
             new_cost = cost_so_far[current] + cost
@@ -202,3 +206,8 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
                 priority = new_cost + heur
                 heappush(frontier, (priority, next))
                 came_from[next] = current
+
+
+def ocr_array(im):
+    image = Image.fromarray(im)
+    return pytesseract.image_to_string(image)
