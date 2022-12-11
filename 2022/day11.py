@@ -31,7 +31,7 @@ def throw_op(old):
 def parse_monkey(monkey_txt: str, part2=False) -> Monkey:
     num_line, start_line, op_line, test_line, true_line, false_line = monkey_txt.split(
         "\n")
-    monkey_num = int(re.match("Monkey ([0-9]+)", num_line).groups()[0])
+    # monkey number is redundant
     start_items = [int(x) for x in re.findall("[0-9]+", start_line)]
     operation = re.match(r".*Operation:\ (.*)", op_line).groups()[0]
     test_crit = int(re.match(".*divisible.*?([0-9]+)", test_line).groups()[0])
