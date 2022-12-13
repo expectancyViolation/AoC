@@ -50,11 +50,11 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY, year=YEAR)
-    print(data)
+    data = get_data(DAY, year=YEAR,filename="input/2022/onHk.txt")
+    #print(data)
     res = part1(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
     res = part2(data)
     print(res)
-    submit(DAY, 2, res, year=YEAR)
+    # submit(DAY, 2, res, year=YEAR)
