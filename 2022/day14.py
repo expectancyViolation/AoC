@@ -1,6 +1,7 @@
 import re
 
 import numpy as np
+from PIL import ImageOps
 
 from util import *
 
@@ -33,7 +34,7 @@ def generate_cave_layout(data):
     max_x = max(coord[0] for row in coords for coord in row)
     max_depth = max(coord[1] for row in coords for coord in row)
     # part 2 might lead to x of size max_x+max_depth(b.c. of 45° angle)
-    cave = np.zeros([max_x + max_depth + 10, max_depth + 10], dtype=int)
+    cave = np.zeros([max_x + max_depth + 10, max_depth + 10], dtype=np.uint8)
     for row in coords:
         lx, ly = row[0]
         for x, y in row[1:]:
@@ -54,6 +55,9 @@ def part2(data):
     cave, max_depth = generate_cave_layout(data)
     cave[:, max_depth + 2] = 1
     simulate(cave, max_depth + 2)
+    img = Image.fromarray(cave * 100, 'L')
+    img = ImageOps.mirror(img.rotate(-90, expand=True))
+    img.save("/tmp/lul_.png")
     return np.sum(cave == 2) + 1  # include uppermost point of "pyramid"
 
 
