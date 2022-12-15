@@ -2,12 +2,14 @@ import re
 from collections import defaultdict
 from itertools import product
 
-import numpy as np
-
 from util import *
 
 DAY = 15
 YEAR = 2022
+
+
+def manhattan(x, y, a, b):
+    return abs(x - a) + abs(y - b)
 
 
 def parse_input(data):
@@ -21,31 +23,32 @@ def parse_input(data):
         beacons += [(bx, by)]
     return stations, beacons
 
-
-# calculate "coverage" of line y=200000 using numpy array and slice assignments
-# an offset is necessary to guarantee positive x values
+# interval union using 1-d line scan
 @timing
 def part1(data):
     line_y = 2000000
     stations, beacons = parse_input(data)
     beacons = {x for x, y in beacons if y == line_y}
-    x_abs_limit = max(abs(k) for x, _, d in stations for k in (x + d, x - d))
-    max_x_area = 2 * (x_abs_limit + 2)
-    offset = max_x_area // 2
-    no_beacons = np.zeros([max_x_area], dtype=bool)
+    spots_of_interest = [(x, 0) for x in beacons]
     for sx, sy, d in stations:
         dy = abs(sy - line_y)
         dx = d - dy
         if dx > 0:
-            no_beacons[sx + offset - dx:sx + offset + dx + 1] = 1
-    for beacon in beacons:
-        no_beacons[beacon + offset] = 0
+            spots_of_interest += [(sx - dx, 1)]
+            spots_of_interest += [(sx + dx + 1, -1)]
 
-    return np.sum(no_beacons)
+    total = 0
+    depth = 0
+    last_x = None
+    for x, d in sorted(spots_of_interest):
+        if depth > 0:
+            total += (x - last_x)
+            if d == 0:
+                total -= 1
+        depth += d
+        last_x = x
 
-
-def manhattan(x, y, a, b):
-    return abs(x - a) + abs(y - b)
+    return res
 
 
 # since we know there is a unique solution
@@ -88,6 +91,7 @@ if __name__ == "__main__":
     res = part1(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
+    # p2_loop(data)
     res = part2(data)
     print(res)
     # submit(DAY, 2, res, year=YEAR)
