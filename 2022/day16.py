@@ -1,5 +1,9 @@
 import re
 from collections import defaultdict
+from itertools import product
+
+import numpy as np
+from scipy.sparse.csgraph import floyd_warshall
 
 from util import *
 
@@ -15,15 +19,14 @@ def parse_valve_plan(data):
         valves[valve] = (value, neighbors)
     return valves
 
-
-def part1(data):
-    valves = parse_valve_plan(data)
+@timing
+def get_state_scores(valves, start_time=0):
     valve_indices = defaultdict(lambda: 0,
                                 {valve: 1 << i for i, valve in enumerate(
                                     v for v, (flow, _) in valves.items() if
                                     flow > 0)})
     states = {(0, "AA"): 0}
-    for i in range(1, 31):
+    for i in range(start_time + 1, 31):
         remaining_time_after_move = (30 - i)
         new_states = defaultdict(lambda: 0)
         for (opened, pos), score in states.items():
@@ -38,56 +41,30 @@ def part1(data):
                 new_states[new_state] = max(new_states[new_state],
                                             score + score_diff)
         states = new_states
-    return max(states.values())
+    return states
+
+
+def part1(data):
+    valves = parse_valve_plan(data)
+    return max(get_state_scores(valves).values())
 
 
 def part2(data):
     valves = parse_valve_plan(data)
-    valve_indices = defaultdict(lambda: 0,
-                                {valve: 1 << i for i, valve in enumerate(
-                                    v for v, (flow, _) in valves.items() if
-                                    flow > 0)})
-    states = {(0, "AA", "AA"): 0}
-    print(len(valve_indices))
-    print(len(valves))
-    print(2 ** len(valve_indices) * (len(valves) ** 2))
-    all_open = sum(valve_indices.values())
-    for i in range(5, 31):
-        remaining_time_after_move = (30 - i)
-        for k in [0, 1]:
-            new_states = defaultdict(lambda: 0)
-            for (opened, *positions), score in states.items():
-                pos = positions[k]
-                valve_score, neighbors = valves[pos]
-                if valve_indices[pos] > 0 and not (opened & valve_indices[pos]):
-                    open_state = (opened | valve_indices[pos], *positions)
-                    score_diff = remaining_time_after_move * valve_score
-                    new_states[open_state] = max(new_states[open_state],
-                                                 score + score_diff)
-                for nb in neighbors:
-                    new_positions = [*positions]
-                    new_positions[k] = nb
-                    new_states[(opened, *new_positions)] = max(
-                        new_states[(opened, *new_positions)],
-                        score)
-            states = new_states
-            print(i, len(states))
-            print(max(states.values()))
-            if all_open in states:
-                break
-    return max(states.values())
+    state_scores = get_state_scores(valves, 4)
+    reduced_states = defaultdict(lambda: 0)
+    for (opened, _pos), score in state_scores.items():
+        reduced_states[opened] = max(reduced_states[opened], score)
 
+    return max(reduced_states[a] + reduced_states[b]
+               for a, b in product(reduced_states, repeat=2)
+               if not (a & b))
 
 if __name__ == "__main__":
-    # data = get_data(DAY, year=YEAR, raw=True,
-    #                 filename="input/2022/16_test.txt").split("\n")
     data = get_data(DAY, year=YEAR, raw=True).split("\n")
-    # print(data)
     res = part1(data)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
     res = part2(data)
     print(res)
-    # 2076 too low
-    # 2106 wrong
     # submit(DAY, 2, res, year=YEAR)
