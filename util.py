@@ -14,7 +14,24 @@ from bs4 import BeautifulSoup
 from functools import wraps
 from time import time
 
-#from pytesseract import pytesseract
+
+# from pytesseract import pytesseract
+
+def n_timing(n=10):
+    def timing(f):
+        @wraps(f)
+        def wrap(*args, **kw):
+            ts = time()
+            for _ in range(n):
+                result = f(*args, **kw)
+            te = time()
+            print('func:%r took: %2.4f sec for %s executions' % \
+                  (f.__name__, te - ts, n))
+            return result
+
+        return wrap
+
+    return timing
 
 
 def timing(f):
