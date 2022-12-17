@@ -1,5 +1,5 @@
 from collections import defaultdict
-from itertools import cycle, chain
+from itertools import cycle
 
 import numpy as np
 
@@ -11,10 +11,8 @@ YEAR = 2022
 
 def gen_rocks():
     with open("17_rocks.txt", "r") as f:
-        data = f.read()
-    rocks = [rock.split("\n") for rock in data.split("\n\n")]
-    for rock in cycle(rocks):
-        yield rock
+        rocks = [rock.split("\n") for rock in f.read().split("\n\n")]
+    yield from cycle(rocks)
 
 
 def gen_jets(data):
@@ -47,29 +45,30 @@ def simulate(data, n_steps=2022, hash_depth=50):
     def gen_rock_positions(rock, x, y):
         for i, line in enumerate(rock[::-1]):
             for j, val in enumerate(line):
-                if val == ".":
-                    continue
-                yield x + j, i + y
+                if val == "#":
+                    yield x + j, i + y
 
-    def test_collision(rock, x, y):
-        for rx, ry in gen_rock_positions(rock, x, y):
-            if not (0 <= rx < 7):
-                return True
-            if ry < 0:
-                return True
-            if (rx, ry) in filled:
-                return True
-        return False
+    def check_valid_position(rock, x, y):
+        return all(all(((0 <= rx < 7), ry >= 0, (rx, ry) not in filled))
+                   for rx, ry in gen_rock_positions(rock, x, y))
 
-    def my_hash(jet_count, rock_index, rock_count):
-        if curr_height < hash_depth:
-            return
+    def hash_top_layers():
         to_hash = []
         for x, y in filled:
             y = y - curr_height + hash_depth
             if y >= 0:
                 to_hash.append((x, y))
-        new_hash = hash(tuple(sorted(to_hash)))
+        return hash(tuple(sorted(to_hash)))
+
+    periodic_height = 0
+    period_found = False
+    rock_count = 0
+
+    def check_period_by_hash():
+        if curr_height < hash_depth:
+            return
+        new_hash = hash_top_layers()
+        rock_index = rock_count % piece_period
         curr_hashes = hashes[(jet_count, rock_index)]
         if new_hash in curr_hashes:
             old_i, old_height = curr_hashes[new_hash]
@@ -78,16 +77,13 @@ def simulate(data, n_steps=2022, hash_depth=50):
             return period, height_step
         curr_hashes[new_hash] = (rock_count, curr_height)
 
-    periodic_height = 0
-    period_found = False
-    rock_count = 0
-
-    def try_advance_period(jet_count, rock_index):
+    def try_advance_period():
         nonlocal rock_count, periodic_height, period_found
-        hash_response = my_hash(jet_count, rock_index, rock_count)
+        hash_response = check_period_by_hash()
         if hash_response is not None:
-            period_found = True
             period, height_step = hash_response
+            # print("found period",period,height_step)
+            period_found = True
             remaining_steps = n_steps - rock_count - 1
             periodic_steps = (remaining_steps // period) * period
             periodic_height = (remaining_steps // period) * height_step
@@ -95,9 +91,8 @@ def simulate(data, n_steps=2022, hash_depth=50):
 
     while rock_count < n_steps:
         rock = next(rocks_gen)
-        rock_index = rock_count % piece_period
         if not period_found:
-            try_advance_period(jet_count, rock_index)
+            try_advance_period()
 
         rx, ry = 2, curr_height + 3
         while True:
@@ -105,20 +100,22 @@ def simulate(data, n_steps=2022, hash_depth=50):
             jet = next(jet_gen)
             jet_count = (jet_count + 1) % jet_period
             nx, ny = rx + jet, ry
-            if not test_collision(rock, nx, ny):
+            if check_valid_position(rock, nx, ny):
                 rx, ry = nx, ny
             # fall
             nx, ny = rx, ry - 1
-            if test_collision(rock, nx, ny):
+            if check_valid_position(rock, nx, ny):
+                rx, ry = nx, ny
+            else:
                 # freeze rock
                 filled |= {*gen_rock_positions(rock, rx, ry)}
-                curr_height = max(curr_height, 1 + max(
-                    y for x, y in gen_rock_positions(rock, rx, ry)))
+                curr_height = max(
+                    curr_height,
+                    1 + max(y for x, y in gen_rock_positions(rock, rx, ry)))
                 break
-            else:
-                rx, ry = nx, ny
         rock_count += 1
     return filled, periodic_height
+
 
 @timing
 def part1(data):
@@ -130,15 +127,13 @@ def part1(data):
 
 @timing
 def part2(data):
-    print(len(data))
-    filled, periodic_height = simulate(data, 1000000000000)
+    filled, periodic_height = simulate(data, 1_000_000_000_000)
     height = max(y for x, y in filled) + 1 + periodic_height
     return height
 
 
 if __name__ == "__main__":
-    data = get_data(DAY, year=YEAR, raw=True)
-    # print(data)
+    data = get_data(DAY, year=YEAR,filename="input/2022/17_test.txt", raw=True)
     res = part1(data)
     print(res)
     # submit(DAY, 1, res,year=YEAR)
