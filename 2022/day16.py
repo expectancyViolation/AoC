@@ -96,8 +96,6 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    # data = get_data(DAY, year=YEAR, raw=True,
-    #                 filename="input/2022/16_test.txt").split("\n")
     data = get_data(DAY, year=YEAR, raw=True).split("\n")
     res = part1(data)
     print(res)
