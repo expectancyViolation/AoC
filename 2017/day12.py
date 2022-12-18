@@ -13,7 +13,7 @@ def get_gen_neighbors(data):
 
 def part1(data):
     gen_neighbors = get_gen_neighbors(data)
-    res = dfs(gen_neighbors=gen_neighbors,
+    res = bfs(gen_neighbors=gen_neighbors,
               initial_state=0,
               is_final_state=lambda x: False)
     return len(res.distances)

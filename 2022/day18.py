@@ -45,7 +45,7 @@ def part2(data):
     m_min = min(x for state in occupied for x in state)
     initial_state = (m_min - 1, m_min - 1, m_min - 1)
     gen_nbs = get_gen_neighbors(cubes)
-    search_result = dfs(gen_nbs, initial_state)
+    search_result = bfs(gen_nbs, initial_state)
     return sum(1 for point in cubes for nb in gen_nbs(point)
                if nb not in occupied and (nb in search_result.distances))
 

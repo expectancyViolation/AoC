@@ -151,14 +151,14 @@ def connected_components(gen_neighbors, nodes):
     components = []
     while nodes:
         node = nodes.pop()
-        res = dfs(gen_neighbors=gen_neighbors, initial_state=node)
+        res = bfs(gen_neighbors=gen_neighbors, initial_state=node)
         connected = set(res.distances)
         components += [connected]
         nodes -= connected
     return components
 
 
-def dfs(gen_neighbors,
+def bfs(gen_neighbors,
         initial_state,
         is_final_state=None,
         short_circuit=True) -> Optional[SearchResult]:
