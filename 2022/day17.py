@@ -133,7 +133,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY, year=YEAR,filename="input/2022/17_test.txt", raw=True)
+    data = get_data(DAY, year=YEAR, raw=True)
     res = part1(data)
     print(res)
     # submit(DAY, 1, res,year=YEAR)
