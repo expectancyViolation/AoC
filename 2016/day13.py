@@ -34,12 +34,12 @@ def is_end(pos):
 
 def part1(data):
     my_number = data[0]
-    return dfs(get_get_neighbors(my_number), (1, 1), is_end).shortest_distance
+    return bfs(get_get_neighbors(my_number), (1, 1), is_end).shortest_distance
 
 
 def part2(data):
     my_number = data[0]
-    distances = dfs(get_get_neighbors(my_number), (1, 1), is_end).distances
+    distances = bfs(get_get_neighbors(my_number), (1, 1), is_end).distances
     print(distances)
     return sum(1 for x, d in distances.items() if d <= 50)
 

@@ -35,7 +35,7 @@ def is_end(state):
 
 def part1(data):
     gen_neighbors = get_gen_neighbors(data)
-    result = dfs(gen_neighbors=gen_neighbors,
+    result = bfs(gen_neighbors=gen_neighbors,
                  initial_state=(0, 0, ""),
                  is_final_state=is_end)
     _x, _y, path = result.shortest_node
@@ -44,7 +44,7 @@ def part1(data):
 
 def part2(data):
     gen_neighbors = get_gen_neighbors(data)
-    result = dfs(gen_neighbors=gen_neighbors,
+    result = bfs(gen_neighbors=gen_neighbors,
                  initial_state=(0, 0, ""),
                  is_final_state=is_end,
                  short_circuit=False)
