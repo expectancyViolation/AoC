@@ -7,15 +7,17 @@ from pathlib import Path
 import os
 from typing import Dict, Optional
 
-import numpy as np
 import requests
-from PIL import Image
-from bs4 import BeautifulSoup
+try:
+    from PIL import Image
+    from bs4 import BeautifulSoup
+    from pytesseract import pytesseract
+except Exception as e:
+    print(e)
 
 from functools import wraps
 from time import time
 
-from pytesseract import pytesseract
 
 
 def timing(f):
