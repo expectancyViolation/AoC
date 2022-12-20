@@ -8,18 +8,12 @@ import os
 from typing import Dict, Optional
 
 import requests
-try:
-    from PIL import Image
-    from bs4 import BeautifulSoup
-    from pytesseract import pytesseract
-except Exception as e:
-    print(e)
 
+from bs4 import BeautifulSoup
 from functools import wraps
 from time import time
 
 
-# from pytesseract import pytesseract
 
 def n_timing(n=10):
     def timing(f):
@@ -226,8 +220,3 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
                 priority = new_cost + heur
                 heappush(frontier, (priority, next))
                 came_from[next] = current
-
-
-def ocr_array(im):
-    image = Image.fromarray(im)
-    return pytesseract.image_to_string(image)
