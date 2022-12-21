@@ -1,49 +1,41 @@
+from fractions import Fraction
+
 from util import *
+
+from sortedcontainers import SortedDict
 
 DAY = 20
 YEAR = 2022
 
 
-@dataclass
-class Node:
-    value: int
-    next: Optional[None] = None
-    prev: Optional[None] = None
-
-
+@timing
 def simulate(data, rounds=1):
     n = len(data)
-    nodes = [Node(x) for x in data]
-    for i in range(n):
-        nodes[i].next = nodes[(i + 1) % n]
-        nodes[i].prev = nodes[(i - 1) % n]
-
-    for _ in range(rounds):
-        for node in nodes:
-            if node.value == 0:
-                continue
-            pred = node.prev
-            old_next = node.next
-            curr_next = node
-            for _ in range(node.value % (n - 1)):
-                curr_next = curr_next.next
-            pred.next = old_next
-            old_next.prev = pred
-            curr_next_next = curr_next.next
-            node.next = curr_next_next
-            curr_next_next.prev = node
-            curr_next.next = node
-            node.prev = curr_next
-
-    zero_index = data.index(0)
-    curr = nodes[zero_index]
-    vals = []
-    for _ in range(3):
-        for _ in range(1000):
-            curr = curr.next
-        vals += [curr.value]
-    print(vals)
-    return sum(vals)
+    indices = {(x, i): Fraction(i, 1) for i, x in enumerate(data)}
+    sorted_ring = SortedDict({i: x for x, i in indices.items()})
+    for _round in range(rounds):
+        for i, x in enumerate(data):
+            ind = indices[(x, i)]
+            curr_pos = sorted_ring.index(ind)
+            del (sorted_ring[ind])
+            new_pos = (curr_pos + x - 1) % (n - 1)
+            left = sorted_ring.keys()[new_pos]
+            if new_pos + 1 < n - 1:
+                right = sorted_ring.keys()[(new_pos + 1)]
+            else:
+                right = Fraction(n, 1)
+            new_ind = (left + right) / 2
+            assert new_ind not in sorted_ring
+            indices[(x, i)] = new_ind
+            sorted_ring[new_ind] = x
+    zero_ind = indices[next((x, i) for i, x in enumerate(data) if x == 0)]
+    zero_pos = sorted_ring.index(zero_ind)
+    res = 0
+    for k in range(1, 4):
+        mix_pos = (zero_pos + 1000 * k) % n
+        mix_ind = sorted_ring.keys()[mix_pos]
+        res += sorted_ring[mix_ind]
+    return res
 
 
 def part1(data):
@@ -63,3 +55,4 @@ if __name__ == "__main__":
     res = part2(data)
     print(res)
     # submit(DAY, 2, res, year=YEAR)
+
