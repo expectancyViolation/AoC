@@ -11,11 +11,11 @@ YEAR = 2022
 @timing
 def simulate(data, rounds=1):
     n = len(data)
-    indices = {(x, i): Fraction(i, 1) for i, x in enumerate(data)}
-    sorted_ring = SortedDict({i: x for x, i in indices.items()})
+    indices = [Fraction(i, 1) for i, _x in enumerate(data)]
+    sorted_ring = SortedDict({i: x for x, i in enumerate(indices)})
     for _round in range(rounds):
         for i, x in enumerate(data):
-            ind = indices[(x, i)]
+            ind = indices[i]
             curr_pos = sorted_ring.index(ind)
             del (sorted_ring[ind])
             new_pos = (curr_pos + x - 1) % (n - 1)
@@ -25,10 +25,9 @@ def simulate(data, rounds=1):
             else:
                 right = Fraction(n, 1)
             new_ind = (left + right) / 2
-            assert new_ind not in sorted_ring
-            indices[(x, i)] = new_ind
+            indices[i] = new_ind
             sorted_ring[new_ind] = x
-    zero_ind = indices[next((x, i) for i, x in enumerate(data) if x == 0)]
+    zero_ind = indices[next(i for i, x in enumerate(data) if x == 0)]
     zero_pos = sorted_ring.index(zero_ind)
     res = 0
     for k in range(1, 4):
@@ -55,4 +54,3 @@ if __name__ == "__main__":
     res = part2(data)
     print(res)
     # submit(DAY, 2, res, year=YEAR)
-
