@@ -1,4 +1,5 @@
 import re
+
 import networkx as nx
 from networkx import topological_sort
 import sympy as sp
@@ -17,10 +18,8 @@ def solve(data):
     G = nx.DiGraph()
 
     h = sp.symbols("h")
-    humn_value = None
+    humn_value = root_left = root_right = None
     rules = {}
-    root_left = None
-    root_right = None
     for rule in rows:
         left, right = rule
         if left == 'humn':
