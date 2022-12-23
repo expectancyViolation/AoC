@@ -161,7 +161,7 @@ def part2(map_, path, cube_size=50):
             facing = cross((-dx, -dy, -dz), z_dir[reverse_three_d_map_[curr_pos]])
 
     sol_x, sol_y = reverse_three_d_map_[curr_pos]
-    draw_cube(three_d_map_,x_dir,y_dir)
+    draw_cube(three_d_map_, x_dir, y_dir)
     # generate 3d facing lookup by rotating the 3d y-direction (corresponding to 2d (0,1)) clockwise
     facing_lookup = []
     q = y_dir[(sol_x, sol_y)]
@@ -182,11 +182,14 @@ def parse_input(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY, year=YEAR,filename="input/2022/22_test.txt")
+    # data = get_data(DAY, year=YEAR,filename="input/2022/22_test.txt")
+    # cube_size=4
+    data = get_data(DAY, year=YEAR)
+    cube_size = 50
     my_map, my_path = parse_input(data)
     res = part1(my_map, my_path)
     print(res)
     # submit(DAY, 1, res, year=YEAR)
-    res = part2(my_map, my_path, cube_size=4)
+    res = part2(my_map, my_path, cube_size=cube_size)
     print(res)
     # submit(DAY, 2, res,year=YEAR)
