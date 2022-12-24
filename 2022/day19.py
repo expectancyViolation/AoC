@@ -1,6 +1,7 @@
 import re
 from functools import cache
 from math import prod
+import multiprocessing as mp
 
 from util import *
 
@@ -115,7 +116,6 @@ def part2(data):
     return prod(sols)
 
 
-import multiprocessing as mp
 
 if __name__ == "__main__":
     data = get_data(DAY, year=YEAR, raw=True).strip().split("\n")

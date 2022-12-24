@@ -8,6 +8,7 @@ import os
 from typing import Dict, Optional
 
 import requests
+
 try:
     from PIL import Image
     from bs4 import BeautifulSoup
@@ -199,6 +200,14 @@ def dfs(gen_neighbors,
                         shortest_node=shortest_node)
 
 
+def dfs_old(gen_neighbors, initial_state, is_final_state, *args):
+    def gen_neighbors_no_dist(state):
+        for x,d in gen_neighbors(state):
+            yield x
+    res = dfs(gen_neighbors_no_dist, initial_state, is_final_state)
+    return res.shortest_distance, res.distances, res.shortest_node
+
+
 def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
     frontier = []
     heappush(frontier, (0, initial_state))
@@ -209,12 +218,14 @@ def a_star_search(gen_neighbors, initial_state, is_final_state, heuristic):
     min_heuristic = inf
     while len(frontier):
         # print("---")
-        if len(cost_so_far) % 10000 == 0:
-            print(len(cost_so_far), min_heuristic)
+        if len(cost_so_far) % 100 == 0:
+            pass
+            # print(len(cost_so_far), min_heuristic)
+            # print(cost_so_far)
         _, current = heappop(frontier)
 
         if is_final_state(current):
-            print("visited", len(cost_so_far))
+            # print("visited", len(cost_so_far))
             return cost_so_far[current], came_from, current
 
         for next, cost in gen_neighbors(current):
