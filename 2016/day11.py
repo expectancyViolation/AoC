@@ -87,7 +87,7 @@ def is_final_state(state):
 
 def part1(data):
     elevator, floors = get_initial_state(data)
-    return dfs(gen_valid_neighbor_states, (elevator, floors),
+    return bfs(gen_valid_neighbor_states, (elevator, floors),
                is_final_state=is_final_state).shortest_distance
 
 
@@ -101,7 +101,7 @@ def part2(data):
     floors = (extended_first_floor, *floors[1:])
     # return a_star_search(gen_valid_neighbor_states, (elevator, floors),
     #                      is_final_state=is_final_state, heuristic=heuristic)
-    return dfs(gen_valid_neighbor_states, (elevator, floors),
+    return bfs(gen_valid_neighbor_states, (elevator, floors),
                is_final_state=is_final_state).shortest_distance
 
 
