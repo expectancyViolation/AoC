@@ -42,9 +42,14 @@ def simulate(data, hard_mode=False):
         new_shield = max(0, state.shield - 1)
         new_poison = max(0, state.poison - 1)
         new_recharge = max(0, state.recharge - 1)
-        return State(my_hp=new_hp, boss_hp=new_boss_hp, mana=new_mana,
-                     shield=new_shield, poison=new_poison,
-                     recharge=new_recharge)
+        return State(
+            my_hp=new_hp,
+            boss_hp=new_boss_hp,
+            mana=new_mana,
+            shield=new_shield,
+            poison=new_poison,
+            recharge=new_recharge,
+        )
 
     def gen_my_turn(state):
         state = calculate_dmg(state, False)
@@ -54,15 +59,15 @@ def simulate(data, hard_mode=False):
         if state.mana >= 73:
             new_boss_hp = max(0, state.boss_hp - 2)
             new_hp = state.my_hp + 2
-            yield replace(state, mana=state.mana - 73, boss_hp=new_boss_hp,
-                          my_hp=new_hp), 73
+            yield replace(
+                state, mana=state.mana - 73, boss_hp=new_boss_hp, my_hp=new_hp
+            ), 73
         if state.mana >= 113 and state.shield == 0:
             yield replace(state, shield=6, mana=state.mana - 113), 113
         if state.mana >= 173 and state.poison == 0:
             yield replace(state, poison=6, mana=state.mana - 173), 173
         if state.mana >= 229 and state.recharge == 0:
-            yield replace(state, mana=state.mana - 229,
-                          recharge=5), 229
+            yield replace(state, mana=state.mana - 229, recharge=5), 229
 
     def gen_neighbors(state):
         if state.my_hp == 0:
@@ -83,8 +88,9 @@ def simulate(data, hard_mode=False):
     def heuristic(state):
         return 0
 
-    cost, came_from, current = a_star_search(gen_neighbors, initial_state,
-                                             is_final, heuristic)
+    cost, came_from, current = a_star_search(
+        gen_neighbors, initial_state, is_final, heuristic
+    )
     return cost
 
 

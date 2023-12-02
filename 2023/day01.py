@@ -1,4 +1,5 @@
 import re
+from timeit import timeit
 
 from util import *
 
@@ -39,7 +40,7 @@ def part2(data):
 
 
 if __name__ == "__main__":
-    data = get_data(DAY, year=YEAR)
+    data = get_data(DAY, filename="input/2023/day01_bigboy",year=YEAR)
 
     res = part1(data)
     print(res)

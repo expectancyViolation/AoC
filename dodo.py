@@ -16,7 +16,7 @@ def task_template_day():
         if not os.path.exists(out_file):
             template.stream(year=year, day=day).dump(out_file)
 
-    year_param = {'name': 'year', 'short': 'y', 'default': '2022'}
+    year_param = {'name': 'year', 'short': 'y', 'default': '2023'}
     day_param = {'name': 'day', 'short': 'd', 'default': '1'}
     return {
         'actions': [template],

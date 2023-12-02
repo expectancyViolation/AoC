@@ -8,8 +8,13 @@ import os
 from typing import Dict, Optional
 
 import requests
+try:
+    from PIL import Image
+    from bs4 import BeautifulSoup
+    from pytesseract import pytesseract
+except Exception as e:
+    print(e)
 
-from bs4 import BeautifulSoup
 from functools import wraps
 from time import time
 

@@ -9,11 +9,7 @@ from io import StringIO
 DAY = 21
 YEAR = 2015
 
-counts = {
-    "Weapons": [1],
-    "Armor": [0, 1],
-    "Rings": [*range(3)]
-}
+counts = {"Weapons": [1], "Armor": [0, 1], "Rings": [*range(3)]}
 
 
 def parse_shop(shop_file):
@@ -36,9 +32,9 @@ def gen_poss_equipments(shop, ind=0):
     for i in c:
         for bought in combinations(df.iterrows(), i):
             for dmg, armor, cost in gen_poss_equipments(shop, ind + 1):
-                new_cost = cost + sum(item['Cost'] for _, item in bought)
-                new_dmg = dmg + sum(item['Damage'] for _, item in bought)
-                new_armor = armor + sum(item['Armor'] for _, item in bought)
+                new_cost = cost + sum(item["Cost"] for _, item in bought)
+                new_dmg = dmg + sum(item["Damage"] for _, item in bought)
+                new_armor = armor + sum(item["Armor"] for _, item in bought)
                 yield new_dmg, new_armor, new_cost
 
 
